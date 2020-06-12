@@ -5,7 +5,7 @@ using System.Linq;
 using static Board;
 using static Util;
 
-namespace Stuff.Tests
+namespace Tests
 {
     public class UnitTest1
     {

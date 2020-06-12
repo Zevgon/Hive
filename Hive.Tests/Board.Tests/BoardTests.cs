@@ -3,7 +3,7 @@ using Xunit;
 using static Board;
 using static Piece;
 
-namespace Stuff.Tests
+namespace Tests
 {
     public class BoardTests
     {
