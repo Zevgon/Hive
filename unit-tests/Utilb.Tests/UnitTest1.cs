@@ -3,6 +3,7 @@ using Xunit;
 using System.Collections.Generic;
 using System.Linq;
 using static Board;
+using static Utilb;
 
 namespace Stuff.Tests
 {

@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilb", "Utilb\Utilb.csproj", "{94616397-F6F6-495D-9B0B-046DACB880D5}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilb.Tests", "Utilb.Tests\Utilb.Tests.csproj", "{FDA68CFB-DC21-4CE0-B848-6C4896CDDD9D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "hive", "..\Hive\hive.csproj", "{F8B53754-90EC-4432-AD50-C90E33734180}"
@@ -22,18 +20,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{94616397-F6F6-495D-9B0B-046DACB880D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{94616397-F6F6-495D-9B0B-046DACB880D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{94616397-F6F6-495D-9B0B-046DACB880D5}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{94616397-F6F6-495D-9B0B-046DACB880D5}.Debug|x64.Build.0 = Debug|Any CPU
-		{94616397-F6F6-495D-9B0B-046DACB880D5}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{94616397-F6F6-495D-9B0B-046DACB880D5}.Debug|x86.Build.0 = Debug|Any CPU
-		{94616397-F6F6-495D-9B0B-046DACB880D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{94616397-F6F6-495D-9B0B-046DACB880D5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{94616397-F6F6-495D-9B0B-046DACB880D5}.Release|x64.ActiveCfg = Release|Any CPU
-		{94616397-F6F6-495D-9B0B-046DACB880D5}.Release|x64.Build.0 = Release|Any CPU
-		{94616397-F6F6-495D-9B0B-046DACB880D5}.Release|x86.ActiveCfg = Release|Any CPU
-		{94616397-F6F6-495D-9B0B-046DACB880D5}.Release|x86.Build.0 = Release|Any CPU
 		{FDA68CFB-DC21-4CE0-B848-6C4896CDDD9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FDA68CFB-DC21-4CE0-B848-6C4896CDDD9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDA68CFB-DC21-4CE0-B848-6C4896CDDD9D}.Debug|x64.ActiveCfg = Debug|Any CPU

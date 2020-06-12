@@ -14,7 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Utilb\Utilb.csproj" />
     <ProjectReference Include="..\..\Hive\hive.csproj" />
   </ItemGroup>
 
