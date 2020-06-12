@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilb.Tests", "Utilb.Tests\Utilb.Tests.csproj", "{FDA68CFB-DC21-4CE0-B848-6C4896CDDD9D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "hive", "..\Hive\hive.csproj", "{F8B53754-90EC-4432-AD50-C90E33734180}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Util.Tests", "Util.Tests\Util.Tests.csproj", "{C0730F75-48E1-4F4C-AEC6-E0A743A495DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,18 +20,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FDA68CFB-DC21-4CE0-B848-6C4896CDDD9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FDA68CFB-DC21-4CE0-B848-6C4896CDDD9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FDA68CFB-DC21-4CE0-B848-6C4896CDDD9D}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{FDA68CFB-DC21-4CE0-B848-6C4896CDDD9D}.Debug|x64.Build.0 = Debug|Any CPU
-		{FDA68CFB-DC21-4CE0-B848-6C4896CDDD9D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{FDA68CFB-DC21-4CE0-B848-6C4896CDDD9D}.Debug|x86.Build.0 = Debug|Any CPU
-		{FDA68CFB-DC21-4CE0-B848-6C4896CDDD9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FDA68CFB-DC21-4CE0-B848-6C4896CDDD9D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FDA68CFB-DC21-4CE0-B848-6C4896CDDD9D}.Release|x64.ActiveCfg = Release|Any CPU
-		{FDA68CFB-DC21-4CE0-B848-6C4896CDDD9D}.Release|x64.Build.0 = Release|Any CPU
-		{FDA68CFB-DC21-4CE0-B848-6C4896CDDD9D}.Release|x86.ActiveCfg = Release|Any CPU
-		{FDA68CFB-DC21-4CE0-B848-6C4896CDDD9D}.Release|x86.Build.0 = Release|Any CPU
 		{F8B53754-90EC-4432-AD50-C90E33734180}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F8B53754-90EC-4432-AD50-C90E33734180}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8B53754-90EC-4432-AD50-C90E33734180}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -44,5 +32,17 @@ Global
 		{F8B53754-90EC-4432-AD50-C90E33734180}.Release|x64.Build.0 = Release|Any CPU
 		{F8B53754-90EC-4432-AD50-C90E33734180}.Release|x86.ActiveCfg = Release|Any CPU
 		{F8B53754-90EC-4432-AD50-C90E33734180}.Release|x86.Build.0 = Release|Any CPU
+		{C0730F75-48E1-4F4C-AEC6-E0A743A495DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0730F75-48E1-4F4C-AEC6-E0A743A495DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0730F75-48E1-4F4C-AEC6-E0A743A495DD}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C0730F75-48E1-4F4C-AEC6-E0A743A495DD}.Debug|x64.Build.0 = Debug|Any CPU
+		{C0730F75-48E1-4F4C-AEC6-E0A743A495DD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C0730F75-48E1-4F4C-AEC6-E0A743A495DD}.Debug|x86.Build.0 = Debug|Any CPU
+		{C0730F75-48E1-4F4C-AEC6-E0A743A495DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0730F75-48E1-4F4C-AEC6-E0A743A495DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0730F75-48E1-4F4C-AEC6-E0A743A495DD}.Release|x64.ActiveCfg = Release|Any CPU
+		{C0730F75-48E1-4F4C-AEC6-E0A743A495DD}.Release|x64.Build.0 = Release|Any CPU
+		{C0730F75-48E1-4F4C-AEC6-E0A743A495DD}.Release|x86.ActiveCfg = Release|Any CPU
+		{C0730F75-48E1-4F4C-AEC6-E0A743A495DD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
