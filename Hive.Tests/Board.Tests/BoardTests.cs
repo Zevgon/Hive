@@ -28,7 +28,7 @@ namespace Stuff.Tests
             board.placePiece(0, piece1);
             board.placePiece(0, piece2);
 
-            Assert.True(board.getPiecesAt(0).Count == 1);
+            Assert.Single(board.getPiecesAt(0));
         }
 
         private Piece newPiece()
