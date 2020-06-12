@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "hive", "..\Hive\hive.csproj", "{F8B53754-90EC-4432-AD50-C90E33734180}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hive", "..\Hive\Hive.csproj", "{F8B53754-90EC-4432-AD50-C90E33734180}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Util.Tests", "Util.Tests\Util.Tests.csproj", "{C0730F75-48E1-4F4C-AEC6-E0A743A495DD}"
 EndProject
