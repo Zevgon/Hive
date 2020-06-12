@@ -1,6 +1,6 @@
 ﻿// using System;
 
-// namespace Utilb
+// namespace Util
 // {
 //     public class Class1
 //     {
@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class Utilb {
+public class Util {
   public static List<int> findAdjacents(int tileNumber)
   {
     if (tileNumber == 0)
