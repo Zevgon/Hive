@@ -122,9 +122,9 @@ public class Board : ICloneable
     }
   }
 
-  private List<int> findOccupiedAdjacents(int tile)
+  private List<int> findOccupiedAdjacents(int tileNumber)
   {
-    return Util.findAdjacents(tile).FindAll(isOccupiedAt);
+    return Util.findAdjacents(tileNumber).FindAll(isOccupiedAt);
   }
 
   private bool hasMultipleIslands()

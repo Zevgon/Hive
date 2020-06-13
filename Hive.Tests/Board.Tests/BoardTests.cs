@@ -79,7 +79,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_multiplePiecesOnTileEnd_isSuccessful()
+    public void testMovePiece_multiplePiecesOnTileEnd_succeeds()
     {
       Piece beetle = new Piece(PieceType.Beetle, Color.White);
       Piece queen = new Piece(PieceType.Queen, Color.White);
@@ -134,7 +134,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_wouldBreakOneHiveRule_doesNotMovePiece1()
+    public void testMovePiece_wouldBreakOneHiveRule_fails1()
     {
       Piece ant = new Piece(PieceType.Ant, Color.White);
       Piece queen = new Piece(PieceType.Queen, Color.White);
@@ -151,7 +151,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_wouldBreakOneHiveRule_doesNotMovePiece2()
+    public void testMovePiece_wouldBreakOneHiveRule_fails2()
     {
       Piece antW = new Piece(PieceType.Ant, Color.White);
       Piece queenW = new Piece(PieceType.Queen, Color.White);
@@ -171,7 +171,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_wouldBreakOneHiveRule_doesNotMovePiece3()
+    public void testMovePiece_wouldBreakOneHiveRule_fails3()
     {
       Piece antW = new Piece(PieceType.Ant, Color.White);
       Piece queenW = new Piece(PieceType.Queen, Color.White);
@@ -198,61 +198,61 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_validBecauseLoopExists_isSuccessful()
+    public void testMovePiece_validBecauseLoopExists_succeeds()
     {
       // TODO
     }
 
     [Fact]
-    public void testMovePiece_nonBeetleOntoOccupiedTile_doesNotMovePiece()
+    public void testMovePiece_nonBeetleOntoOccupiedTile_fails()
     {
       // TODO
     }
 
     [Fact]
-    public void testMovePiece_beetleOntoOccupiedTile_isSuccessful()
+    public void testMovePiece_beetleOntoOccupiedTile_succeeds()
     {
       // TODO
     }
 
     [Fact]
-    public void testMovePiece_grasshopperOverEmptyTile_doesNotMovePiece()
+    public void testMovePiece_grasshopperOverEmptyTile_fails()
     {
       // TODO
     }
 
     [Fact]
-    public void testMovePiece_grasshopperToAdjacentSpace_doesNotMovePiece()
+    public void testMovePiece_grasshopperToAdjacentSpace_fails()
     {
       // TODO
     }
 
     [Fact]
-    public void testMovePiece_antThroughSpaceWithOneEdge_doesNotMovePiece()
+    public void testMovePiece_antThroughSpaceWithOneEdge_fails()
     {
       // TODO
     }
 
     [Fact]
-    public void testMovePiece_antThroughSpaceWithTwoEdges_isSuccessful()
+    public void testMovePiece_antThroughSpaceWithTwoEdges_succeeds()
     {
       // TODO
     }
 
     [Fact]
-    public void testMovePiece_spiderMoreThanThreeTiles_doesNotMovePiece()
+    public void testMovePiece_spiderMoreThanThreeTiles_fails()
     {
       // TODO
     }
 
     [Fact]
-    public void testMovePiece_spiderLessThanThreeTiles_doesNotMovePiece()
+    public void testMovePiece_spiderLessThanThreeTiles_fails()
     {
       // TODO
     }
 
     [Fact]
-    public void testMovePiece_validSpiderMove_isSuccessful()
+    public void testMovePiece_validSpiderMove_succeeds()
     {
       // TODO
     }
