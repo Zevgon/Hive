@@ -29,4 +29,10 @@ public class Piece : ICloneable
   {
     return new Piece(Type, Color);
   }
+
+  override
+  public string ToString()
+  {
+    return $"{Color} {Type}";
+  }
 }

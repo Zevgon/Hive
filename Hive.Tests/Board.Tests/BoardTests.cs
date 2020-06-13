@@ -8,14 +8,6 @@ namespace Tests
   {
     private StringWriter stringWriter;
     private TextWriter originalOutput;
-    private String ONE_HIVE_ERROR =
-      "Illegal move. Cannot break the \"One Hive Rule\".\n";
-    private String INVALID_MOVE_ERROR =
-      "Illegal move. Piece cannot move there\n";
-    private String PIECE_STACK_ERROR =
-      "Illegal move. Cannot move a piece on top of another piece unless it's a beetle\n";
-    private String PLACEMENT_ADJACENCY_ERROR =
-      "Illegal placement. Cannot place a piece next to another piece of the opposite color\n";
 
     public BoardTests()
     {
@@ -67,7 +59,8 @@ namespace Tests
 
       board.placePiece(2, antW);
 
-      Assert.Equal(PLACEMENT_ADJACENCY_ERROR, stringWriter.ToString());
+      Assert.Equal(
+         $"{ErrorMessages.PLACEMENT_ADJACENCY}\n", stringWriter.ToString());
       Assert.False(board.isOccupied(2));
     }
 
@@ -168,7 +161,7 @@ namespace Tests
 
       board.movePiece(0, 2);
 
-      Assert.Equal(ONE_HIVE_ERROR, stringWriter.ToString());
+      Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", stringWriter.ToString());
       Assert.True(board.getTopPiece(0) == queen);
     }
 
@@ -187,7 +180,7 @@ namespace Tests
 
       board.movePiece(0, 2);
 
-      Assert.Equal(ONE_HIVE_ERROR, stringWriter.ToString());
+      Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", stringWriter.ToString());
       Assert.True(board.getTopPiece(0) == queenW);
     }
 
@@ -211,7 +204,7 @@ namespace Tests
 
       board.movePiece(0, 2);
 
-      Assert.Equal(ONE_HIVE_ERROR, stringWriter.ToString());
+      Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", stringWriter.ToString());
       Assert.True(board.getTopPiece(0) == queen);
     }
 
@@ -238,7 +231,7 @@ namespace Tests
 
       board.movePiece(0, 2);
 
-      Assert.Equal(ONE_HIVE_ERROR, stringWriter.ToString());
+      Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", stringWriter.ToString());
       Assert.True(board.getTopPiece(0) == queenW);
     }
 
@@ -253,7 +246,7 @@ namespace Tests
 
       board.movePiece(1, 7);
 
-      Assert.Equal(ONE_HIVE_ERROR, stringWriter.ToString());
+      Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", stringWriter.ToString());
       Assert.True(board.getTopPiece(1) == ant);
     }
 
@@ -274,7 +267,7 @@ namespace Tests
 
       board.movePiece(1, 0);
 
-      Assert.Equal(PIECE_STACK_ERROR, stringWriter.ToString());
+      Assert.Equal($"{ErrorMessages.PIECE_STACKING}\n", stringWriter.ToString());
       Assert.True(board.getTopPiece(1) == antW);
     }
 
@@ -317,7 +310,7 @@ namespace Tests
 
       board.movePiece(6, 2);
 
-      Assert.Equal(INVALID_MOVE_ERROR, stringWriter.ToString());
+      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", stringWriter.ToString());
       Assert.Equal(board.getTopPiece(6), antW);
       Assert.False(board.isOccupied(2));
     }

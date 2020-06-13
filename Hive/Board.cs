@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static Errors;
+using static ErrorMessages;
 using static Util;
 
 public class Board : ICloneable
@@ -130,10 +130,7 @@ public class Board : ICloneable
     Piece piece = getTopPiece(tileStart);
     if (isOccupied(tileEnd) && piece.Type != PieceType.Beetle)
     {
-      throw new ArgumentException(
-        // "Illegal move. Cannot move a piece on top of another piece unless it's a beetle"
-        Errors.ILLEGAL_MOVE
-      );
+      throw new ArgumentException(ErrorMessages.PIECE_STACKING);
     }
   }
 
@@ -144,8 +141,7 @@ public class Board : ICloneable
     if (PieceMap.Count > 1 &&
         adjacentPieces.Any(adjPiece => adjPiece.Color != piece.Color))
     {
-      throw new ArgumentException(
-        "Illegal placement. Cannot place a piece next to another piece of the opposite color");
+      throw new ArgumentException(ErrorMessages.PLACEMENT_ADJACENCY);
     }
   }
 
@@ -154,7 +150,7 @@ public class Board : ICloneable
     HashSet<int> reachableTiles = findReachableTilesForAnt(tileStart);
     if (!reachableTiles.Contains(tileEnd))
     {
-      throw new ArgumentException("Illegal move. Piece cannot move there");
+      throw new ArgumentException(ErrorMessages.ILLEGAL_MOVE);
     }
   }
 
@@ -185,8 +181,7 @@ public class Board : ICloneable
   {
     if (hasMultipleIslands())
     {
-      throw new ArgumentException(
-        "Illegal move. Cannot break the \"One Hive Rule\".");
+      throw new ArgumentException(ErrorMessages.ONE_HIVE);
     }
   }
 
