@@ -43,7 +43,7 @@ namespace Tests
       board.movePiece(1, 4);
 
       Assert.True(board.getPiecesAt(0)[0] == queen);
-      Assert.True(board.getPiecesAt(1)[0] == ant);
+      Assert.True(board.getPiecesAt(4)[0] == ant);
     }
 
     private Piece newPiece()
