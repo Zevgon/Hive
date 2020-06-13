@@ -32,7 +32,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testmovepiece_validmove_movespiece()
+    public void testMovePiece_validMove_movesPiece()
     {
       Piece queen = new Piece(PieceType.Queen, Color.White);
       Piece ant = new Piece(PieceType.Ant, Color.White);
