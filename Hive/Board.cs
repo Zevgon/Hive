@@ -20,16 +20,25 @@ public class Board : ICloneable
 
   public void placePiece(int tileNumber, Piece piece)
   {
-    if (canPlacePieceOn(tileNumber))
+    try
     {
-      PieceMap[tileNumber] = new List<Piece>(
-        new Piece[] { piece }
-      );
+      validatePlacement(tileNumber, piece);
+      PieceMap[tileNumber] = new List<Piece>(new Piece[] { piece });
     }
-    else
+    catch (ArgumentException e)
     {
-      Console.WriteLine($"Invalid piece placement. Piece already exists on tile {tileNumber}");
+      Console.WriteLine(e.Message);
     }
+    // if (canPlacePieceOn(tileNumber))
+    // {
+    //   PieceMap[tileNumber] = new List<Piece>(
+    //     new Piece[] { piece }
+    //   );
+    // }
+    // else
+    // {
+    //   Console.WriteLine($"Invalid piece placement. Piece already exists on tile {tileNumber}");
+    // }
   }
 
   public void movePiece(int tileStart, int tileEnd)
@@ -120,6 +129,18 @@ public class Board : ICloneable
       return false;
     }
     return true;
+  }
+
+  private void validatePlacement(int tileNumber, Piece piece)
+  {
+    List<Piece> adjacentPieces = findOccupiedAdjacents(tileNumber)
+      .ConvertAll(adj => getTopPieceAt(adj));
+    if (PieceMap.Count > 1 &&
+        adjacentPieces.Any(adjPiece => adjPiece.Color != piece.Color))
+    {
+      throw new ArgumentException(
+        "Illegal placement. Cannot place a piece next to another piece of the opposite color");
+    }
   }
 
   private void validateOneHive(int tileStart, int tileEnd)

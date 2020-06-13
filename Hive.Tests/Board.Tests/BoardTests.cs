@@ -12,6 +12,8 @@ namespace Tests
       "Illegal move. Cannot break the \"One Hive Rule\".\n";
     private String PIECE_STACK_ERROR =
       "Illegal move. Cannot move a piece on top of another piece unless it's a beetle\n";
+    private String PLACEMENT_ADJACENCY_ERROR =
+      "Illegal placement. Cannot place a piece next to another piece of the opposite color\n";
 
     public BoardTests()
     {
@@ -49,6 +51,22 @@ namespace Tests
       board.placePiece(0, piece2);
 
       Assert.Single(board.getPiecesAt(0));
+    }
+
+    [Fact]
+    public void testPlacePiece_nextToOtherColor_fails()
+    {
+      Piece queenW = new Piece(PieceType.Queen, Color.White);
+      Piece queenB = new Piece(PieceType.Queen, Color.Black);
+      Piece antW = new Piece(PieceType.Queen, Color.White);
+      Board board = new Board();
+      board.placePiece(0, queenW);
+      board.placePiece(1, queenB);
+
+      board.placePiece(2, antW);
+
+      Assert.Equal(PLACEMENT_ADJACENCY_ERROR, stringWriter.ToString());
+      Assert.False(board.isOccupiedAt(2));
     }
 
     [Fact]
@@ -155,11 +173,10 @@ namespace Tests
     [Fact]
     public void testMovePiece_wouldBreakOneHiveRule_fails2()
     {
-      Piece antW = new Piece(PieceType.Ant, Color.White);
       Piece queenW = new Piece(PieceType.Queen, Color.White);
-      Piece beetleW = new Piece(PieceType.Beetle, Color.White);
-      Piece antB = new Piece(PieceType.Ant, Color.Black);
       Piece queenB = new Piece(PieceType.Queen, Color.Black);
+      Piece antW = new Piece(PieceType.Ant, Color.White);
+      Piece beetleW = new Piece(PieceType.Beetle, Color.White);
       Board board = new Board();
       board.placePiece(0, queenW);
       board.placePiece(1, queenB);
@@ -179,7 +196,7 @@ namespace Tests
       Piece ant = new Piece(PieceType.Ant, Color.White);
       Piece beetle1 = new Piece(PieceType.Beetle, Color.White);
       Piece beetle2 = new Piece(PieceType.Beetle, Color.White);
-      Piece gh = new Piece(PieceType.Queen, Color.Black);
+      Piece gh = new Piece(PieceType.Gh, Color.White);
       Board board = new Board();
       board.placePiece(0, queen);
       board.placePiece(1, ant);
@@ -280,7 +297,25 @@ namespace Tests
     [Fact]
     public void testMovePiece_antThroughSpaceWithOneEdge_fails()
     {
-      // TODO
+      // Piece antW = new Piece(PieceType.Ant, Color.White);
+      // Piece queenW = new Piece(PieceType.Queen, Color.White);
+      // Piece beetleW = new Piece(PieceType.Beetle, Color.White);
+      // Piece ghW = new Piece(PieceType.Gh, Color.White);
+      // Piece antB = new Piece(PieceType.Ant, Color.Black);
+      // Piece queenB = new Piece(PieceType.Queen, Color.Black);
+      // Piece beetleB = new Piece(PieceType.Beetle, Color.Black);
+      // Piece ghB = new Piece(PieceType.Gh, Color.Black);
+      // Board board = new Board();
+      // board.placePiece(0, queenW);
+      // board.placePiece(1, queenB);
+      // board.placePiece(3, ghW);
+      // board.placePiece(8, antB);
+      // board.placePiece(10, beetleW);
+
+      // board.movePiece(0, 2);
+
+      // Assert.Equal(ONE_HIVE_ERROR, stringWriter.ToString());
+      // Assert.True(board.getTopPieceAt(0) == queenW);
     }
 
     [Fact]
