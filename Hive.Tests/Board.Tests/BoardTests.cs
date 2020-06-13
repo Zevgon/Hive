@@ -1,13 +1,30 @@
 using System;
-using System.Collections.Generic;
 using Xunit;
-using static Board;
-using static Piece;
+using System.IO;
 
 namespace Tests
 {
-  public class BoardTests
+  public class BoardTests : IDisposable
   {
+    private StringWriter stringWriter;
+    private TextWriter originalOutput;
+    private String ONE_HIVE_ERROR =
+      "Illegal move. Cannot break the \"One Hive Rule\".\n";
+
+    public BoardTests()
+    {
+      stringWriter = new StringWriter();
+      originalOutput = Console.Out;
+      Console.SetOut(stringWriter);
+    }
+
+    public void Dispose()
+    {
+      Console.SetOut(originalOutput);
+      stringWriter.Dispose();
+    }
+
+
     [Fact]
     public void testPlacePiece_validTile_addsToBoard()
     {
@@ -129,6 +146,7 @@ namespace Tests
 
       board.movePiece(0, 2);
 
+      Assert.Equal(ONE_HIVE_ERROR, stringWriter.ToString());
       Assert.True(board.getPiecesAt(0)[0] == queen);
     }
 
@@ -148,6 +166,7 @@ namespace Tests
 
       board.movePiece(0, 2);
 
+      Assert.Equal(ONE_HIVE_ERROR, stringWriter.ToString());
       Assert.True(board.getPiecesAt(0)[0] == queenW);
     }
 
@@ -174,6 +193,7 @@ namespace Tests
 
       board.movePiece(0, 2);
 
+      Assert.Equal(ONE_HIVE_ERROR, stringWriter.ToString());
       Assert.True(board.getPiecesAt(0)[0] == queenW);
     }
 

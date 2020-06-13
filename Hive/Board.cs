@@ -112,6 +112,7 @@ public class Board : ICloneable
     boardClone.removePieceAt(tileStart);
     if (boardClone.hasMultipleIslands())
     {
+      Console.WriteLine("Illegal move. Cannot break the \"One Hive Rule\".");
       return false;
     }
     return true;
