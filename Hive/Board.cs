@@ -29,16 +29,6 @@ public class Board : ICloneable
     {
       Console.WriteLine(e.Message);
     }
-    // if (canPlacePieceOn(tileNumber))
-    // {
-    //   PieceMap[tileNumber] = new List<Piece>(
-    //     new Piece[] { piece }
-    //   );
-    // }
-    // else
-    // {
-    //   Console.WriteLine($"Invalid piece placement. Piece already exists on tile {tileNumber}");
-    // }
   }
 
   public void movePiece(int tileStart, int tileEnd)
@@ -46,8 +36,8 @@ public class Board : ICloneable
     try
     {
       validateMove(tileStart, tileEnd);
-      Piece piece = removePieceAt(tileStart);
-      addPieceAt(tileEnd, piece);
+      Piece piece = removePiece(tileStart);
+      addPiece(tileEnd, piece);
     }
     catch (ArgumentException e)
     {
@@ -55,27 +45,27 @@ public class Board : ICloneable
     }
   }
 
-  public bool isOccupiedAt(int tileNumber)
+  public bool isOccupied(int tileNumber)
   {
     return PieceMap.ContainsKey(tileNumber);
   }
 
-  public List<Piece> getPiecesAt(int tileNumber)
+  public List<Piece> getPieces(int tileNumber)
   {
-    if (isOccupiedAt(tileNumber))
+    if (isOccupied(tileNumber))
     {
       return PieceMap[tileNumber];
     }
     return new List<Piece>();
   }
 
-  public Piece getTopPieceAt(int tileNumber)
+  public Piece getTopPiece(int tileNumber)
   {
-    if (!isOccupiedAt(tileNumber))
+    if (!isOccupied(tileNumber))
     {
       throw new ArgumentException($"No pieces on tile {tileNumber}");
     }
-    List<Piece> pieces = getPiecesAt(tileNumber);
+    List<Piece> pieces = getPieces(tileNumber);
     return pieces[pieces.Count - 1];
   }
 
@@ -86,12 +76,7 @@ public class Board : ICloneable
 
   // Private methods
 
-  private bool canPlacePieceOn(int tileNumber)
-  {
-    return !isOccupiedAt(tileNumber);
-  }
-
-  private void addPieceAt(int tileNumber, Piece piece)
+  private void addPiece(int tileNumber, Piece piece)
   {
     if (PieceMap.ContainsKey(tileNumber))
     {
@@ -103,7 +88,7 @@ public class Board : ICloneable
     }
   }
 
-  private Piece removePieceAt(int tileNumber)
+  private Piece removePiece(int tileNumber)
   {
     if (PieceMap.ContainsKey(tileNumber))
     {
@@ -132,7 +117,7 @@ public class Board : ICloneable
   private void validatePlacement(int tileNumber, Piece piece)
   {
     List<Piece> adjacentPieces = findOccupiedAdjacents(tileNumber)
-      .ConvertAll(adj => getTopPieceAt(adj));
+      .ConvertAll(adj => getTopPiece(adj));
     if (PieceMap.Count > 1 &&
         adjacentPieces.Any(adjPiece => adjPiece.Color != piece.Color))
     {
@@ -144,16 +129,16 @@ public class Board : ICloneable
   private void validateOneHive(int tileStart, int tileEnd)
   {
     Board boardClone = (Board)this.Clone();
-    Piece piece = boardClone.removePieceAt(tileStart);
+    Piece piece = boardClone.removePiece(tileStart);
     boardClone.checkMultipleIslands();
-    boardClone.addPieceAt(tileEnd, piece);
+    boardClone.addPiece(tileEnd, piece);
     boardClone.checkMultipleIslands();
   }
 
   private void validatePieceStacking(int tileStart, int tileEnd)
   {
-    Piece piece = getTopPieceAt(tileStart);
-    if (isOccupiedAt(tileEnd) && piece.Type != PieceType.Beetle)
+    Piece piece = getTopPiece(tileStart);
+    if (isOccupied(tileEnd) && piece.Type != PieceType.Beetle)
     {
       throw new ArgumentException(
         "Illegal move. Cannot move a piece on top of another piece unless it's a beetle"
@@ -163,7 +148,7 @@ public class Board : ICloneable
 
   private List<int> findOccupiedAdjacents(int tileNumber)
   {
-    return Util.findAdjacents(tileNumber).FindAll(isOccupiedAt);
+    return Util.findAdjacents(tileNumber).FindAll(isOccupied);
   }
 
   private void checkMultipleIslands()

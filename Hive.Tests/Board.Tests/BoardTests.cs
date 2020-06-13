@@ -37,7 +37,7 @@ namespace Tests
 
       board.placePiece(0, piece);
 
-      Assert.True(board.isOccupiedAt(0));
+      Assert.True(board.isOccupied(0));
     }
 
     [Fact]
@@ -50,7 +50,7 @@ namespace Tests
       board.placePiece(0, piece1);
       board.placePiece(0, piece2);
 
-      Assert.Single(board.getPiecesAt(0));
+      Assert.Single(board.getPieces(0));
     }
 
     [Fact]
@@ -66,7 +66,7 @@ namespace Tests
       board.placePiece(2, antW);
 
       Assert.Equal(PLACEMENT_ADJACENCY_ERROR, stringWriter.ToString());
-      Assert.False(board.isOccupiedAt(2));
+      Assert.False(board.isOccupied(2));
     }
 
     [Fact]
@@ -80,8 +80,8 @@ namespace Tests
 
       board.movePiece(1, 4);
 
-      Assert.True(board.getTopPieceAt(0) == queen);
-      Assert.True(board.getTopPieceAt(4) == ant);
+      Assert.True(board.getTopPiece(0) == queen);
+      Assert.True(board.getTopPiece(4) == ant);
     }
 
     [Fact]
@@ -95,7 +95,7 @@ namespace Tests
 
       board.movePiece(1, 4);
 
-      Assert.False(board.isOccupiedAt(1));
+      Assert.False(board.isOccupied(1));
     }
 
     [Fact]
@@ -109,10 +109,10 @@ namespace Tests
 
       board.movePiece(0, 1);
 
-      Assert.False(board.isOccupiedAt(0));
-      Assert.True(board.isOccupiedAt(1));
-      Assert.True(board.getTopPieceAt(1) == beetle);
-      Assert.True(board.getPiecesAt(1)[0] == queen);
+      Assert.False(board.isOccupied(0));
+      Assert.True(board.isOccupied(1));
+      Assert.True(board.getTopPiece(1) == beetle);
+      Assert.True(board.getPieces(1)[0] == queen);
     }
 
     [Fact]
@@ -127,9 +127,9 @@ namespace Tests
       board.movePiece(0, 1);
       board.movePiece(1, 2);
 
-      Assert.True(board.isOccupiedAt(1));
-      Assert.True(board.isOccupiedAt(2));
-      Assert.True(board.getTopPieceAt(2) == beetle);
+      Assert.True(board.isOccupied(1));
+      Assert.True(board.isOccupied(2));
+      Assert.True(board.getTopPiece(2) == beetle);
     }
 
     [Fact]
@@ -144,13 +144,13 @@ namespace Tests
 
       boardClone.movePiece(1, 4);
 
-      Assert.True(board.isOccupiedAt(0));
-      Assert.True(board.isOccupiedAt(1));
-      Assert.True(board.getTopPieceAt(0) == queen);
-      Assert.True(boardClone.isOccupiedAt(0));
-      Assert.True(boardClone.isOccupiedAt(4));
+      Assert.True(board.isOccupied(0));
+      Assert.True(board.isOccupied(1));
+      Assert.True(board.getTopPiece(0) == queen);
+      Assert.True(boardClone.isOccupied(0));
+      Assert.True(boardClone.isOccupied(4));
       // Should be a different queen
-      Assert.False(boardClone.getTopPieceAt(0) == queen);
+      Assert.False(boardClone.getTopPiece(0) == queen);
     }
 
     [Fact]
@@ -167,7 +167,7 @@ namespace Tests
       board.movePiece(0, 2);
 
       Assert.Equal(ONE_HIVE_ERROR, stringWriter.ToString());
-      Assert.True(board.getTopPieceAt(0) == queen);
+      Assert.True(board.getTopPiece(0) == queen);
     }
 
     [Fact]
@@ -186,7 +186,7 @@ namespace Tests
       board.movePiece(0, 2);
 
       Assert.Equal(ONE_HIVE_ERROR, stringWriter.ToString());
-      Assert.True(board.getTopPieceAt(0) == queenW);
+      Assert.True(board.getTopPiece(0) == queenW);
     }
 
     [Fact]
@@ -210,7 +210,7 @@ namespace Tests
       board.movePiece(0, 2);
 
       Assert.Equal(ONE_HIVE_ERROR, stringWriter.ToString());
-      Assert.True(board.getTopPieceAt(0) == queen);
+      Assert.True(board.getTopPiece(0) == queen);
     }
 
     [Fact]
@@ -237,7 +237,7 @@ namespace Tests
       board.movePiece(0, 2);
 
       Assert.Equal(ONE_HIVE_ERROR, stringWriter.ToString());
-      Assert.True(board.getTopPieceAt(0) == queenW);
+      Assert.True(board.getTopPiece(0) == queenW);
     }
 
     [Fact]
@@ -252,7 +252,7 @@ namespace Tests
       board.movePiece(1, 7);
 
       Assert.Equal(ONE_HIVE_ERROR, stringWriter.ToString());
-      Assert.True(board.getTopPieceAt(1) == ant);
+      Assert.True(board.getTopPiece(1) == ant);
     }
 
     [Fact]
@@ -273,7 +273,7 @@ namespace Tests
       board.movePiece(1, 0);
 
       Assert.Equal(PIECE_STACK_ERROR, stringWriter.ToString());
-      Assert.True(board.getTopPieceAt(1) == antW);
+      Assert.True(board.getTopPiece(1) == antW);
     }
 
     [Fact]
@@ -315,7 +315,7 @@ namespace Tests
       // board.movePiece(0, 2);
 
       // Assert.Equal(ONE_HIVE_ERROR, stringWriter.ToString());
-      // Assert.True(board.getTopPieceAt(0) == queenW);
+      // Assert.True(board.getTopPiece(0) == queenW);
     }
 
     [Fact]
