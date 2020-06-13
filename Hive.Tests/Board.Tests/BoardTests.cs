@@ -138,16 +138,41 @@ namespace Tests
       Piece antW = new Piece(PieceType.Ant, Color.White);
       Piece queenW = new Piece(PieceType.Queen, Color.White);
       Piece beetleW = new Piece(PieceType.Beetle, Color.White);
-      Piece ghW = new Piece(PieceType.Gh, Color.White);
       Piece antB = new Piece(PieceType.Ant, Color.Black);
       Piece queenB = new Piece(PieceType.Queen, Color.Black);
       Board board = new Board();
       board.placePiece(0, queenW);
-      board.placePiece(1, antW);
+      board.placePiece(1, queenB);
+      board.placePiece(3, antW);
       board.placePiece(4, beetleW);
-      board.placePiece(2, queenB);
 
-      board.movePiece(0, 3);
+      board.movePiece(0, 2);
+
+      Assert.True(board.getPiecesAt(0)[0] == queenW);
+    }
+
+    [Fact]
+    public void testMovePiece_wouldBreakOneHiveRule_doesNotMovePiece3()
+    {
+      Piece antW = new Piece(PieceType.Ant, Color.White);
+      Piece queenW = new Piece(PieceType.Queen, Color.White);
+      Piece beetleW = new Piece(PieceType.Beetle, Color.White);
+      Piece ghW = new Piece(PieceType.Gh, Color.White);
+      Piece antB = new Piece(PieceType.Ant, Color.Black);
+      Piece queenB = new Piece(PieceType.Queen, Color.Black);
+      Piece beetleB = new Piece(PieceType.Beetle, Color.Black);
+      Piece ghB = new Piece(PieceType.Gh, Color.Black);
+      Board board = new Board();
+      board.placePiece(0, queenW);
+      board.placePiece(1, queenB);
+      board.placePiece(3, antW);
+      board.placePiece(7, antB);
+      board.placePiece(4, beetleW);
+      board.placePiece(8, beetleB);
+      board.placePiece(5, ghW);
+      board.placePiece(20, ghB);
+
+      board.movePiece(0, 2);
 
       Assert.True(board.getPiecesAt(0)[0] == queenW);
     }
