@@ -31,6 +31,21 @@ namespace Tests
       Assert.Single(board.getPiecesAt(0));
     }
 
+    [Fact]
+    public void testmovepiece_validmove_movespiece()
+    {
+      Piece queen = new Piece(PieceType.Queen, Color.White);
+      Piece ant = new Piece(PieceType.Ant, Color.White);
+      Board board = new Board();
+      board.placePiece(0, queen);
+      board.placePiece(1, ant);
+
+      board.movePiece(1, 4);
+
+      Assert.True(board.getPiecesAt(0)[0] == queen);
+      Assert.True(board.getPiecesAt(1)[0] == ant);
+    }
+
     private Piece newPiece()
     {
       return new Piece(PieceType.Spider, Color.White);

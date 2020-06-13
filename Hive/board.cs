@@ -25,6 +25,11 @@ public class Board
     }
   }
 
+  public void movePiece(int tileStart, int tileEnd)
+  {
+    throw new NotImplementedException();
+  }
+
   public bool isOccupiedAt(int tileNumber)
   {
     return PieceMap.ContainsKey(tileNumber);
