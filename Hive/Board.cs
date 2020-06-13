@@ -43,9 +43,16 @@ public class Board : ICloneable
 
   public void movePiece(int tileStart, int tileEnd)
   {
-    if (!isValidMove(tileStart, tileEnd)) return;
-    Piece piece = removePieceAt(tileStart);
-    addPieceAt(tileEnd, piece);
+    try
+    {
+      validateMove(tileStart, tileEnd);
+      Piece piece = removePieceAt(tileStart);
+      addPieceAt(tileEnd, piece);
+    }
+    catch (ArgumentException e)
+    {
+      Console.WriteLine(e.Message);
+    }
   }
 
   public bool isOccupiedAt(int tileNumber)
@@ -116,19 +123,10 @@ public class Board : ICloneable
     }
   }
 
-  private bool isValidMove(int tileStart, int tileEnd)
+  private void validateMove(int tileStart, int tileEnd)
   {
-    try
-    {
-      validateOneHive(tileStart, tileEnd);
-      validatePieceStacking(tileStart, tileEnd);
-    }
-    catch (ArgumentException e)
-    {
-      Console.WriteLine(e.Message);
-      return false;
-    }
-    return true;
+    validateOneHive(tileStart, tileEnd);
+    validatePieceStacking(tileStart, tileEnd);
   }
 
   private void validatePlacement(int tileNumber, Piece piece)
