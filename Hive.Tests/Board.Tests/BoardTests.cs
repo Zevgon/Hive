@@ -10,6 +10,8 @@ namespace Tests
     private TextWriter originalOutput;
     private String ONE_HIVE_ERROR =
       "Illegal move. Cannot break the \"One Hive Rule\".\n";
+    private String PIECE_STACK_ERROR =
+      "Illegal move. Cannot move a piece on top of another piece unless it's a beetle\n";
 
     public BoardTests()
     {
@@ -206,7 +208,16 @@ namespace Tests
     [Fact]
     public void testMovePiece_nonBeetleOntoOccupiedTile_fails()
     {
-      // TODO
+      Piece queenW = new Piece(PieceType.Queen, Color.White);
+      Piece antW = new Piece(PieceType.Ant, Color.White);
+      Board board = new Board();
+      board.placePiece(0, queenW);
+      board.placePiece(1, antW);
+
+      board.movePiece(1, 0);
+
+      Assert.Equal(PIECE_STACK_ERROR, stringWriter.ToString());
+      Assert.True(board.getPiecesAt(1)[0] == antW);
     }
 
     [Fact]

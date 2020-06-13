@@ -102,6 +102,7 @@ public class Board : ICloneable
     try
     {
       validateOneHive(tileStart, tileEnd);
+      validatePieceStacking(tileStart, tileEnd);
     }
     catch (ArgumentException e)
     {
@@ -120,6 +121,27 @@ public class Board : ICloneable
       throw new ArgumentException(
         "Illegal move. Cannot break the \"One Hive Rule\".");
     }
+  }
+
+  private void validatePieceStacking(int tileStart, int tileEnd)
+  {
+    Piece piece = getTopPieceAt(tileStart);
+    if (isOccupiedAt(tileEnd) && piece.Type != PieceType.Beetle)
+    {
+      throw new ArgumentException(
+        "Illegal move. Cannot move a piece on top of another piece unless it's a beetle"
+      );
+    }
+  }
+
+  private Piece getTopPieceAt(int tileNumber)
+  {
+    if (!isOccupiedAt(tileNumber))
+    {
+      throw new ArgumentException($"No pieces on tile {tileNumber}");
+    }
+    List<Piece> pieces = getPiecesAt(tileNumber);
+    return pieces[pieces.Count - 1];
   }
 
   private List<int> findOccupiedAdjacents(int tileNumber)
