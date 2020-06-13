@@ -177,6 +177,66 @@ namespace Tests
       Assert.True(board.getPiecesAt(0)[0] == queenW);
     }
 
+    [Fact]
+    public void testMovePiece_validBecauseLoopExists_isSuccessful()
+    {
+      // TODO
+    }
+
+    [Fact]
+    public void testMovePiece_nonBeetleOntoOccupiedTile_doesNotMovePiece()
+    {
+      // TODO
+    }
+
+    [Fact]
+    public void testMovePiece_beetleOntoOccupiedTile_isSuccessful()
+    {
+      // TODO
+    }
+
+    [Fact]
+    public void testMovePiece_grasshopperOverEmptyTile_doesNotMovePiece()
+    {
+      // TODO
+    }
+
+    [Fact]
+    public void testMovePiece_grasshopperToAdjacentSpace_doesNotMovePiece()
+    {
+      // TODO
+    }
+
+    [Fact]
+    public void testMovePiece_antThroughSpaceWithOneEdge_doesNotMovePiece()
+    {
+      // TODO
+    }
+
+    [Fact]
+    public void testMovePiece_antThroughSpaceWithTwoEdges_isSuccessful()
+    {
+      // TODO
+    }
+
+    [Fact]
+    public void testMovePiece_spiderMoreThanThreeTiles_doesNotMovePiece()
+    {
+      // TODO
+    }
+
+    [Fact]
+    public void testMovePiece_spiderLessThanThreeTiles_doesNotMovePiece()
+    {
+      // TODO
+    }
+
+    [Fact]
+    public void testMovePiece_validSpiderMove_isSuccessful()
+    {
+      // TODO
+    }
+
     private Piece newPiece()
     {
       return new Piece(PieceType.Spider, Color.White);
