@@ -27,14 +27,8 @@ public class Board
 
   public void movePiece(int tileStart, int tileEnd)
   {
-    int numPiecesOnTile = PieceMap[tileStart].Count;
-    Piece pieceToMove = PieceMap[tileStart][numPiecesOnTile - 1];
-    PieceMap[tileStart].RemoveAt(numPiecesOnTile - 1);
-    addPieceAt(tileEnd, pieceToMove);
-    if (PieceMap[tileStart].Count == 0)
-    {
-      PieceMap.Remove(tileStart);
-    }
+    Piece piece = removePieceAt(tileStart);
+    addPieceAt(tileEnd, piece);
   }
 
   public bool isOccupiedAt(int tileNumber)
@@ -67,6 +61,26 @@ public class Board
     else
     {
       PieceMap[tileNumber] = new List<Piece>(new Piece[] { piece });
+    }
+  }
+
+  private Piece removePieceAt(int tileNumber)
+  {
+    if (PieceMap.ContainsKey(tileNumber))
+    {
+      List<Piece> pieces = PieceMap[tileNumber];
+      Piece pieceToRemove = pieces[pieces.Count - 1];
+      pieces.RemoveAt(pieces.Count - 1);
+      if (pieces.Count == 0)
+      {
+        PieceMap.Remove(tileNumber);
+      }
+      return pieceToRemove;
+    }
+    else
+    {
+      throw new ArgumentException(
+        $"Cannot remove piece on tile {tileNumber}. Tile is unoccupied");
     }
   }
 }
