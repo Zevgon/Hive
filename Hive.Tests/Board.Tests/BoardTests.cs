@@ -5,35 +5,35 @@ using static Piece;
 
 namespace Tests
 {
-    public class BoardTests
+  public class BoardTests
+  {
+    [Fact]
+    public void testPlacePiece_validTile_addsToBoard()
     {
-        [Fact]
-        public void testPlacePiece_validTile_addsToBoard()
-        {
-            Piece piece = newPiece();
-            Board board = new Board();
+      Piece piece = newPiece();
+      Board board = new Board();
 
-            board.placePiece(0, piece);
+      board.placePiece(0, piece);
 
-            Assert.True(board.isOccupiedAt(0));
-        }
-
-        [Fact]
-        public void testPlacePiece_tileOccupied_doesNotAddToBoard()
-        {
-            Piece piece1 = newPiece();
-            Piece piece2 = newPiece();
-            Board board = new Board();
-
-            board.placePiece(0, piece1);
-            board.placePiece(0, piece2);
-
-            Assert.Single(board.getPiecesAt(0));
-        }
-
-        private Piece newPiece()
-        {
-            return new Piece(PieceType.Spider, Color.White);
-        }
+      Assert.True(board.isOccupiedAt(0));
     }
+
+    [Fact]
+    public void testPlacePiece_tileOccupied_doesNotAddToBoard()
+    {
+      Piece piece1 = newPiece();
+      Piece piece2 = newPiece();
+      Board board = new Board();
+
+      board.placePiece(0, piece1);
+      board.placePiece(0, piece2);
+
+      Assert.Single(board.getPiecesAt(0));
+    }
+
+    private Piece newPiece()
+    {
+      return new Piece(PieceType.Spider, Color.White);
+    }
+  }
 }

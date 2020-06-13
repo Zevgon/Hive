@@ -13,11 +13,14 @@ public class Board
 
   public void placePiece(int tileNumber, Piece piece)
   {
-    if (canPlacePieceOn(tileNumber)) {
+    if (canPlacePieceOn(tileNumber))
+    {
       PieceMap[tileNumber] = new List<Piece>(
         new Piece[] { piece }
       );
-    } else {
+    }
+    else
+    {
       Console.WriteLine($"Invalid piece placement. Piece already exists on tile {tileNumber}");
     }
   }

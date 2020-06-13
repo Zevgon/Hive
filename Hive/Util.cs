@@ -12,12 +12,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class Util {
+public class Util
+{
   public static List<int> findAdjacents(int tileNumber)
   {
     if (tileNumber == 0)
     {
-      return new List<int>(new int[] {1, 2, 3, 4, 5, 6});
+      return new List<int>(new int[] { 1, 2, 3, 4, 5, 6 });
     }
 
     int edgeIdx = getEdgeIdx(tileNumber);
@@ -47,7 +48,8 @@ public class Util {
     neighbors[edgeIdx % 6] = tileNumber + 6 * ringNumber + edgeIdx;
     neighbors[(edgeIdx + 1) % 6] =
       tileNumber + 6 * ringNumber + 1 + edgeIdx;
-    if (isCorner(tileNumber)) {
+    if (isCorner(tileNumber))
+    {
       neighbors[positiveMod(edgeIdx - 1, 6)] =
         tileNumber + 6 * ringNumber + edgeIdx - 1;
       if (edgeIdx == 0) neighbors[5] += 6 * (ringNumber + 1);
@@ -72,7 +74,8 @@ public class Util {
     else
     {
       neighbors[(edgeIdx + 5) % 6] = tileNumber - 1;
-      if (isLastOfRing(tileNumber, ringNumber)) {
+      if (isLastOfRing(tileNumber, ringNumber))
+      {
         neighbors[1] -= 6 * ringNumber;
       }
     }
@@ -96,7 +99,8 @@ public class Util {
       neighbors[(edgeIdx + 4) % 6] =
         tileNumber - 6 * (ringNumber - 1) - edgeIdx - 1;
       // TODO: solve this with more modulo logic?
-      if (isLastOfRing(tileNumber, ringNumber)) {
+      if (isLastOfRing(tileNumber, ringNumber))
+      {
         neighbors[2] -= 6 * (ringNumber - 1);
       }
     }
@@ -133,7 +137,8 @@ public class Util {
     return 3 * ringNumber * (ringNumber - 1) + 1;
   }
 
-  private static int getOffsetFromFirstOfRing(int tileNumber) {
+  private static int getOffsetFromFirstOfRing(int tileNumber)
+  {
     return tileNumber - getFirstOfRing(getRing(tileNumber));
   }
 
@@ -143,7 +148,7 @@ public class Util {
   // r = (3 + sqrt(-3 + 12tileNumber)) / 6
   private static int getRing(int tileNumber)
   {
-    return (int) (3 + Math.Sqrt(-3 + 12 * tileNumber)) / 6;
+    return (int)(3 + Math.Sqrt(-3 + 12 * tileNumber)) / 6;
   }
 
   // By default in C#, -1 % 3 = -1. I've only ever seen that cause problems, never seen it help anyone. -1 % 3 should be 2.
@@ -167,8 +172,8 @@ public class Util {
     int ringFirst = 1;
     while (ringFirst < tileNumber)
     {
-        ringFirst += (6 * ringNumber);
-        ringNumber++;
+      ringFirst += (6 * ringNumber);
+      ringNumber++;
     }
     ringNumber--;
     ringFirst -= (6 * ringNumber);
