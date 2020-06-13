@@ -10,6 +10,8 @@ namespace Tests
     private TextWriter originalOutput;
     private String ONE_HIVE_ERROR =
       "Illegal move. Cannot break the \"One Hive Rule\".\n";
+    private String INVALID_MOVE_ERROR =
+      "Illegal move. Piece cannot move there\n";
     private String PIECE_STACK_ERROR =
       "Illegal move. Cannot move a piece on top of another piece unless it's a beetle\n";
     private String PLACEMENT_ADJACENCY_ERROR =
@@ -297,25 +299,27 @@ namespace Tests
     [Fact]
     public void testMovePiece_antThroughSpaceWithOneEdge_fails()
     {
-      // Piece antW = new Piece(PieceType.Ant, Color.White);
-      // Piece queenW = new Piece(PieceType.Queen, Color.White);
-      // Piece beetleW = new Piece(PieceType.Beetle, Color.White);
-      // Piece ghW = new Piece(PieceType.Gh, Color.White);
-      // Piece antB = new Piece(PieceType.Ant, Color.Black);
-      // Piece queenB = new Piece(PieceType.Queen, Color.Black);
-      // Piece beetleB = new Piece(PieceType.Beetle, Color.Black);
-      // Piece ghB = new Piece(PieceType.Gh, Color.Black);
-      // Board board = new Board();
-      // board.placePiece(0, queenW);
-      // board.placePiece(1, queenB);
-      // board.placePiece(3, ghW);
-      // board.placePiece(8, antB);
-      // board.placePiece(10, beetleW);
+      Piece antW = new Piece(PieceType.Ant, Color.White);
+      Piece queenW = new Piece(PieceType.Queen, Color.White);
+      Piece beetleW = new Piece(PieceType.Beetle, Color.White);
+      Piece ghW = new Piece(PieceType.Gh, Color.White);
+      Piece antB = new Piece(PieceType.Ant, Color.Black);
+      Piece queenB = new Piece(PieceType.Queen, Color.Black);
+      Piece beetleB = new Piece(PieceType.Beetle, Color.Black);
+      Piece ghB = new Piece(PieceType.Gh, Color.Black);
+      Board board = new Board();
+      board.placePiece(0, queenW);
+      board.placePiece(1, queenB);
+      board.placePiece(3, ghW);
+      board.placePiece(8, antB);
+      board.placePiece(10, beetleW);
+      board.placePiece(6, antW);
 
-      // board.movePiece(0, 2);
+      board.movePiece(6, 2);
 
-      // Assert.Equal(ONE_HIVE_ERROR, stringWriter.ToString());
-      // Assert.True(board.getTopPiece(0) == queenW);
+      Assert.Equal(INVALID_MOVE_ERROR, stringWriter.ToString());
+      Assert.Equal(board.getTopPiece(6), antW);
+      Assert.False(board.isOccupied(2));
     }
 
     [Fact]

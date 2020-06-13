@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static Errors;
 using static Util;
 
 public class Board : ICloneable
@@ -112,18 +113,7 @@ public class Board : ICloneable
   {
     validateOneHive(tileStart, tileEnd);
     validatePieceStacking(tileStart, tileEnd);
-  }
-
-  private void validatePlacement(int tileNumber, Piece piece)
-  {
-    List<Piece> adjacentPieces = findOccupiedAdjacents(tileNumber)
-      .ConvertAll(adj => getTopPiece(adj));
-    if (PieceMap.Count > 1 &&
-        adjacentPieces.Any(adjPiece => adjPiece.Color != piece.Color))
-    {
-      throw new ArgumentException(
-        "Illegal placement. Cannot place a piece next to another piece of the opposite color");
-    }
+    validatePieceCanReach(tileStart, tileEnd);
   }
 
   private void validateOneHive(int tileStart, int tileEnd)
@@ -141,14 +131,54 @@ public class Board : ICloneable
     if (isOccupied(tileEnd) && piece.Type != PieceType.Beetle)
     {
       throw new ArgumentException(
-        "Illegal move. Cannot move a piece on top of another piece unless it's a beetle"
+        // "Illegal move. Cannot move a piece on top of another piece unless it's a beetle"
+        Errors.ILLEGAL_MOVE
       );
+    }
+  }
+
+  private void validatePlacement(int tileNumber, Piece piece)
+  {
+    HashSet<Piece> adjacentPieces = findOccupiedAdjacents(tileNumber)
+      .ConvertAll(adj => getTopPiece(adj)).ToHashSet();
+    if (PieceMap.Count > 1 &&
+        adjacentPieces.Any(adjPiece => adjPiece.Color != piece.Color))
+    {
+      throw new ArgumentException(
+        "Illegal placement. Cannot place a piece next to another piece of the opposite color");
+    }
+  }
+
+  private void validateAntCanReach(int tileStart, int tileEnd)
+  {
+    HashSet<int> reachableTiles = findReachableTilesForAnt(tileStart);
+    if (!reachableTiles.Contains(tileEnd))
+    {
+      throw new ArgumentException("Illegal move. Piece cannot move there");
+    }
+  }
+
+  private void validatePieceCanReach(int tileStart, int tileEnd)
+  {
+    Piece piece = getTopPiece(tileStart);
+    switch (piece.Type)
+    {
+      case PieceType.Ant:
+        validateAntCanReach(tileStart, tileEnd);
+        return;
+      default:
+        return;
     }
   }
 
   private List<int> findOccupiedAdjacents(int tileNumber)
   {
     return Util.findAdjacents(tileNumber).FindAll(isOccupied);
+  }
+
+  private List<int> findUnoccupiedAdjacents(int tileNumber)
+  {
+    return Util.findAdjacents(tileNumber).FindAll(adj => !isOccupied(adj));
   }
 
   private void checkMultipleIslands()
@@ -158,6 +188,55 @@ public class Board : ICloneable
       throw new ArgumentException(
         "Illegal move. Cannot break the \"One Hive Rule\".");
     }
+  }
+
+  private HashSet<int> findReachableTilesForAnt(int tileStart)
+  {
+    Queue<int> queue = new Queue<int>(new int[] { tileStart });
+    HashSet<int> seen = new HashSet<int>(new int[] { tileStart });
+    HashSet<int> ret = new HashSet<int>();
+    while (queue.Count > 0)
+    {
+      int tile = queue.Dequeue();
+      seen.Add(tile);
+      foreach (int adj in findImmediateReachablesForAnt(tile))
+      {
+        if (!seen.Contains(adj))
+        {
+          queue.Enqueue(adj);
+          ret.Add(adj);
+        }
+      }
+    }
+    return ret;
+  }
+
+  private HashSet<int> findImmediateReachablesForAnt(int tileNumber)
+  {
+    HashSet<Piece> adjacentPieces = findAdjacentPieces(tileNumber);
+    List<int> unoccupiedAdjacents = findUnoccupiedAdjacents(tileNumber);
+    return unoccupiedAdjacents.FindAll(adj =>
+    {
+      if (findAdjacentPieces(adj).Intersect(adjacentPieces).Count() == 0)
+      {
+        return false;
+      }
+      return !isTooNarrow(tileNumber, adj);
+    }).ToHashSet();
+  }
+
+  private bool isTooNarrow(int tile1, int tile2)
+  {
+    HashSet<int> adjesInCommon = findAdjacents(tile1).ToHashSet()
+      .Intersect(findAdjacents(tile2)).ToHashSet();
+    return adjesInCommon.All(isOccupied);
+  }
+
+  private HashSet<Piece> findAdjacentPieces(int tileNumber)
+  {
+    return findOccupiedAdjacents(tileNumber)
+      .ConvertAll(getTopPiece)
+      .ToHashSet();
   }
 
   private bool hasMultipleIslands()
