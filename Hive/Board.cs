@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using static Util;
 
 public class Board : ICloneable
@@ -33,6 +34,7 @@ public class Board : ICloneable
 
   public void movePiece(int tileStart, int tileEnd)
   {
+    if (!isValidMove(tileStart, tileEnd)) return;
     Piece piece = removePieceAt(tileStart);
     addPieceAt(tileEnd, piece);
   }
@@ -93,5 +95,50 @@ public class Board : ICloneable
       throw new ArgumentException(
         $"Cannot remove piece on tile {tileNumber}. Tile is unoccupied");
     }
+  }
+
+  private bool isValidMove(int tileStart, int tileEnd)
+  {
+    if (!validateOneHive(tileStart, tileEnd))
+    {
+      return false;
+    }
+    return true;
+  }
+
+  private bool validateOneHive(int tileStart, int tileEnd)
+  {
+    Board boardClone = (Board)this.Clone();
+    boardClone.removePieceAt(tileStart);
+    if (boardClone.hasMultipleIslands())
+    {
+      return false;
+    }
+    return true;
+  }
+
+  private List<int> findOccupiedAdjacents(int tile)
+  {
+    return Util.findAdjacents(tile).FindAll(isOccupiedAt);
+  }
+
+  private bool hasMultipleIslands()
+  {
+    int origin = PieceMap.First().Key;
+    Queue<int> queue = new Queue<int>(new int[] { origin });
+    HashSet<int> seen = new HashSet<int>();
+    while (queue.Count > 0)
+    {
+      int tile = queue.Dequeue();
+      seen.Add(tile);
+      foreach (int adj in findOccupiedAdjacents(tile))
+      {
+        if (!seen.Contains(adj))
+        {
+          queue.Enqueue(adj);
+        }
+      }
+    }
+    return PieceMap.Count != seen.Count;
   }
 }
