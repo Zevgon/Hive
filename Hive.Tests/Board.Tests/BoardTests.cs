@@ -175,6 +175,30 @@ namespace Tests
     [Fact]
     public void testMovePiece_wouldBreakOneHiveRule_fails3()
     {
+      Piece queen = new Piece(PieceType.Queen, Color.White);
+      Piece ant = new Piece(PieceType.Ant, Color.White);
+      Piece beetle1 = new Piece(PieceType.Beetle, Color.White);
+      Piece beetle2 = new Piece(PieceType.Beetle, Color.White);
+      Piece gh = new Piece(PieceType.Queen, Color.Black);
+      Board board = new Board();
+      board.placePiece(0, queen);
+      board.placePiece(1, ant);
+      board.placePiece(2, beetle2);
+      board.placePiece(3, beetle2);
+      board.placePiece(4, gh);
+      // Put the beetles onto occupied tiles to maybe mess with piece counts.
+      board.movePiece(2, 1);
+      board.movePiece(3, 4);
+
+      board.movePiece(0, 2);
+
+      Assert.Equal(ONE_HIVE_ERROR, stringWriter.ToString());
+      Assert.True(board.getPiecesAt(0)[0] == queen);
+    }
+
+    [Fact]
+    public void testMovePiece_wouldBreakOneHiveRule_fails4()
+    {
       Piece antW = new Piece(PieceType.Ant, Color.White);
       Piece queenW = new Piece(PieceType.Queen, Color.White);
       Piece beetleW = new Piece(PieceType.Beetle, Color.White);
