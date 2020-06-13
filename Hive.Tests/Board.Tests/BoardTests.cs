@@ -95,6 +95,27 @@ namespace Tests
       Assert.True(board.getPiecesAt(2)[0] == beetle);
     }
 
+    [Fact]
+    public void testBoardClone()
+    {
+      Piece ant = new Piece(PieceType.Ant, Color.White);
+      Piece queen = new Piece(PieceType.Queen, Color.White);
+      Board board = new Board();
+      board.placePiece(0, queen);
+      board.placePiece(1, ant);
+      Board boardClone = (Board)board.Clone();
+
+      boardClone.movePiece(1, 4);
+
+      Assert.True(board.isOccupiedAt(0));
+      Assert.True(board.isOccupiedAt(1));
+      Assert.True(board.getPiecesAt(0)[0] == queen);
+      Assert.True(boardClone.isOccupiedAt(0));
+      Assert.True(boardClone.isOccupiedAt(4));
+      // Should be a different queen
+      Assert.False(boardClone.getPiecesAt(0)[0] == queen);
+    }
+
     private Piece newPiece()
     {
       return new Piece(PieceType.Spider, Color.White);

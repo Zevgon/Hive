@@ -1,3 +1,4 @@
+using System;
 public enum PieceType
 {
   Queen,
@@ -13,7 +14,7 @@ public enum Color
   Black
 }
 
-public class Piece
+public class Piece : ICloneable
 {
   public PieceType Type { get; }
   public Color Color { get; }
@@ -22,5 +23,10 @@ public class Piece
   {
     Type = pieceType;
     Color = color;
+  }
+
+  public object Clone()
+  {
+    return new Piece(Type, Color);
   }
 }

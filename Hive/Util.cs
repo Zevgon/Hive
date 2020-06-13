@@ -1,14 +1,4 @@
-﻿// using System;
-
-// namespace Util
-// {
-//     public class Class1
-//     {
-//     }
-// }
-
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -35,6 +25,23 @@ public class Util
       tileNumber, neighbors, edgeIdx, ringNumber
     );
     return neighbors;
+  }
+
+  public static Dictionary<int, List<Piece>> cloneDictionary(
+    Dictionary<int, List<Piece>> original)
+  {
+    Dictionary<int, List<Piece>> ret = new Dictionary<int, List<Piece>>(
+      original.Count, original.Comparer);
+    foreach (KeyValuePair<int, List<Piece>> entry in original)
+    {
+      ret.Add(entry.Key, cloneList(entry.Value));
+    }
+    return ret;
+  }
+
+  public static List<Piece> cloneList(List<Piece> list)
+  {
+    return list.ConvertAll(piece => (Piece)piece.Clone());
   }
 
   // Private methods

@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using static Util;
 
-public class Board
+public class Board : ICloneable
 {
   // Maps from piece position to the pieces on that position
   private Dictionary<int, List<Piece>> PieceMap { get; }
@@ -9,6 +10,11 @@ public class Board
   public Board()
   {
     PieceMap = new Dictionary<int, List<Piece>>();
+  }
+
+  protected Board(Board other)
+  {
+    PieceMap = Util.cloneDictionary(other.PieceMap);
   }
 
   public void placePiece(int tileNumber, Piece piece)
@@ -43,6 +49,11 @@ public class Board
       return PieceMap[tileNumber];
     }
     return new List<Piece>();
+  }
+
+  public object Clone()
+  {
+    return new Board(this);
   }
 
   // Private methods
