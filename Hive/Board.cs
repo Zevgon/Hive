@@ -53,6 +53,16 @@ public class Board : ICloneable
     return new List<Piece>();
   }
 
+  public Piece getTopPieceAt(int tileNumber)
+  {
+    if (!isOccupiedAt(tileNumber))
+    {
+      throw new ArgumentException($"No pieces on tile {tileNumber}");
+    }
+    List<Piece> pieces = getPiecesAt(tileNumber);
+    return pieces[pieces.Count - 1];
+  }
+
   public object Clone()
   {
     return new Board(this);
@@ -115,12 +125,10 @@ public class Board : ICloneable
   private void validateOneHive(int tileStart, int tileEnd)
   {
     Board boardClone = (Board)this.Clone();
-    boardClone.removePieceAt(tileStart);
-    if (boardClone.hasMultipleIslands())
-    {
-      throw new ArgumentException(
-        "Illegal move. Cannot break the \"One Hive Rule\".");
-    }
+    Piece piece = boardClone.removePieceAt(tileStart);
+    boardClone.checkMultipleIslands();
+    boardClone.addPieceAt(tileEnd, piece);
+    boardClone.checkMultipleIslands();
   }
 
   private void validatePieceStacking(int tileStart, int tileEnd)
@@ -134,19 +142,18 @@ public class Board : ICloneable
     }
   }
 
-  private Piece getTopPieceAt(int tileNumber)
-  {
-    if (!isOccupiedAt(tileNumber))
-    {
-      throw new ArgumentException($"No pieces on tile {tileNumber}");
-    }
-    List<Piece> pieces = getPiecesAt(tileNumber);
-    return pieces[pieces.Count - 1];
-  }
-
   private List<int> findOccupiedAdjacents(int tileNumber)
   {
     return Util.findAdjacents(tileNumber).FindAll(isOccupiedAt);
+  }
+
+  private void checkMultipleIslands()
+  {
+    if (hasMultipleIslands())
+    {
+      throw new ArgumentException(
+        "Illegal move. Cannot break the \"One Hive Rule\".");
+    }
   }
 
   private bool hasMultipleIslands()

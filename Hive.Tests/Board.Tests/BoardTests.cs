@@ -224,6 +224,21 @@ namespace Tests
     }
 
     [Fact]
+    public void testMovePiece_wouldBreakOneHiveRule_fails5()
+    {
+      Piece queen = new Piece(PieceType.Queen, Color.White);
+      Piece ant = new Piece(PieceType.Ant, Color.White);
+      Board board = new Board();
+      board.placePiece(0, queen);
+      board.placePiece(1, ant);
+
+      board.movePiece(1, 7);
+
+      Assert.Equal(ONE_HIVE_ERROR, stringWriter.ToString());
+      Assert.True(board.getPiecesAt(1)[0] == ant);
+    }
+
+    [Fact]
     public void testMovePiece_validBecauseLoopExists_succeeds()
     {
       // TODO
