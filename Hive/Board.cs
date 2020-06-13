@@ -99,23 +99,27 @@ public class Board : ICloneable
 
   private bool isValidMove(int tileStart, int tileEnd)
   {
-    if (!validateOneHive(tileStart, tileEnd))
+    try
     {
+      validateOneHive(tileStart, tileEnd);
+    }
+    catch (ArgumentException e)
+    {
+      Console.WriteLine(e.Message);
       return false;
     }
     return true;
   }
 
-  private bool validateOneHive(int tileStart, int tileEnd)
+  private void validateOneHive(int tileStart, int tileEnd)
   {
     Board boardClone = (Board)this.Clone();
     boardClone.removePieceAt(tileStart);
     if (boardClone.hasMultipleIslands())
     {
-      Console.WriteLine("Illegal move. Cannot break the \"One Hive Rule\".");
-      return false;
+      throw new ArgumentException(
+        "Illegal move. Cannot break the \"One Hive Rule\".");
     }
-    return true;
   }
 
   private List<int> findOccupiedAdjacents(int tile)
