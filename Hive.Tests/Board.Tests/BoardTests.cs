@@ -407,27 +407,6 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_ant_wouldBlockItselfIfNotRemovedDuringTransit_succeeds()
-    {
-      Board board = new Board(
-        new Dictionary<int, List<Piece>>
-        {
-          {8, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
-          {3, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
-          {10, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-        }
-      );
-
-      board.movePiece(8, 2);
-
-      Assert.Equal("", consoleOutCatcher.ToString());
-      Assert.False(board.isOccupied(8));
-      Assert.Equal(PieceType.Ant, board.getTopPiece(2).Type);
-    }
-
-    [Fact]
     public void testMovePiece_antThroughSpaceWithTwoEdges_succeeds()
     {
       Board board = new Board(
@@ -621,7 +600,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_spider_wouldBlockItselfIfNotRemovedDuringTransit_succeeds()
+    public void testMovePiece_spider_wouldBlockItselfIfNotRemovedBeforeTransit_succeeds()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
