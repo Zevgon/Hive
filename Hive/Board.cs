@@ -162,6 +162,7 @@ public class Board : ICloneable
     }).ToHashSet();
   }
 
+  // TODO: Return HashSet instead of List?
   private List<int> findOccupiedAdjacents(int tileNumber)
   {
     return Util.findAdjacents(tileNumber).FindAll(isOccupied);
@@ -191,6 +192,15 @@ public class Board : ICloneable
       }
     }
     return ret;
+  }
+
+  private HashSet<int> findReachableTilesForGh(int tileStart)
+  {
+    HashSet<int> occupiedAdjacents = findOccupiedAdjacents(tileStart).ToHashSet();
+    return occupiedAdjacents.ToList()
+      .ConvertAll(adj => Util.findNextInLine(tileStart, adj))
+      .FindAll(possibleDest => !isOccupied(possibleDest))
+      .ToHashSet();
   }
 
   private HashSet<int> findReachableTilesForSpider(
@@ -255,6 +265,15 @@ public class Board : ICloneable
     }
   }
 
+  private void validateGhCanReach(int tileStart, int tileEnd)
+  {
+    HashSet<int> reachableTiles = findReachableTilesForGh(tileStart);
+    if (!reachableTiles.Contains(tileEnd))
+    {
+      throw new ArgumentException(ErrorMessages.ILLEGAL_MOVE);
+    }
+  }
+
   private void validateNoAdjacentOppositeColors(int tileNumber, Piece piece)
   {
     HashSet<Piece> adjacentPieces = findOccupiedAdjacents(tileNumber)
@@ -285,6 +304,9 @@ public class Board : ICloneable
         return;
       case PieceType.Spider:
         validateSpiderCanReach(tileStart, tileEnd);
+        return;
+      case PieceType.Gh:
+        validateGhCanReach(tileStart, tileEnd);
         return;
       default:
         return;

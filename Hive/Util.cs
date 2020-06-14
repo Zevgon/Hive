@@ -4,6 +4,7 @@ using System.Linq;
 
 public class Util
 {
+  // TODO: return HashSet instead of List?
   public static List<int> findAdjacents(int tileNumber)
   {
     if (tileNumber == 0)
@@ -25,6 +26,15 @@ public class Util
       tileNumber, neighbors, edgeIdx, ringNumber
     );
     return neighbors;
+  }
+
+  // Returns the next tile in the indicated direction if you start at tile1
+  // and draw a line to tile2. E.g. if tile1 is 0 and tile2 is 2, this should
+  // return 9.
+  public static int findNextInLine(int tile1, int tile2)
+  {
+    List<int> tile1Adjes = findAdjacents(tile1);
+    return findAdjacents(tile2)[tile1Adjes.IndexOf(tile2)];
   }
 
   public static Dictionary<int, List<Piece>> cloneDictionary(
