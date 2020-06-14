@@ -77,6 +77,7 @@ public class Util
       neighbors[(edgeIdx + 4) % 6] = tileNumber - 1;
       // TODO: solve this with more modulo logic?
       if (edgeIdx == 0) neighbors[4] += ringNumber * 6;
+      if (isLastOfRing(tileNumber, ringNumber)) neighbors[1] -= ringNumber * 6;
     }
     else
     {
