@@ -7,21 +7,20 @@ namespace Tests
 {
   public class BoardTests : IDisposable
   {
-    // TODO: rename to consoleOutCatcher
-    private StringWriter stringWriter;
+    private StringWriter consoleOutCatcher;
     private TextWriter originalOutput;
 
     public BoardTests()
     {
-      stringWriter = new StringWriter();
+      consoleOutCatcher = new StringWriter();
       originalOutput = Console.Out;
-      Console.SetOut(stringWriter);
+      Console.SetOut(consoleOutCatcher);
     }
 
     public void Dispose()
     {
       Console.SetOut(originalOutput);
-      stringWriter.Dispose();
+      consoleOutCatcher.Dispose();
     }
 
 
@@ -50,7 +49,7 @@ namespace Tests
       board.placePiece(0, piece2);
 
       Assert.Equal(
-         $"{ErrorMessages.TILE_OCCUPIED}\n", stringWriter.ToString());
+         $"{ErrorMessages.TILE_OCCUPIED}\n", consoleOutCatcher.ToString());
     }
 
     [Fact]
@@ -83,7 +82,7 @@ namespace Tests
       board.placePiece(2, new Piece(PieceType.Queen, Color.White));
 
       Assert.Equal(
-         $"{ErrorMessages.PLACEMENT_ADJACENCY}\n", stringWriter.ToString());
+         $"{ErrorMessages.PLACEMENT_ADJACENCY}\n", consoleOutCatcher.ToString());
       Assert.False(board.isOccupied(2));
     }
 
@@ -184,7 +183,7 @@ namespace Tests
 
       board.movePiece(0, 2);
 
-      Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", stringWriter.ToString());
+      Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", consoleOutCatcher.ToString());
       Assert.True(board.getTopPiece(0) == queen);
     }
 
@@ -204,7 +203,7 @@ namespace Tests
 
       board.movePiece(0, 2);
 
-      Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", stringWriter.ToString());
+      Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", consoleOutCatcher.ToString());
       Assert.True(board.getTopPiece(0) == queenW);
     }
 
@@ -230,7 +229,7 @@ namespace Tests
 
       board.movePiece(0, 2);
 
-      Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", stringWriter.ToString());
+      Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", consoleOutCatcher.ToString());
       Assert.True(board.getTopPiece(0) == queen);
     }
 
@@ -254,7 +253,7 @@ namespace Tests
 
       board.movePiece(0, 2);
 
-      Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", stringWriter.ToString());
+      Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", consoleOutCatcher.ToString());
       Assert.True(board.getTopPiece(0) == queenW);
     }
 
@@ -272,7 +271,7 @@ namespace Tests
 
       board.movePiece(1, 7);
 
-      Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", stringWriter.ToString());
+      Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", consoleOutCatcher.ToString());
       Assert.True(board.getTopPiece(1) == ant);
     }
 
@@ -312,7 +311,7 @@ namespace Tests
       board.movePiece(1, 0);
 
       Assert.Equal(
-        $"{ErrorMessages.PIECE_STACKING}\n", stringWriter.ToString());
+        $"{ErrorMessages.PIECE_STACKING}\n", consoleOutCatcher.ToString());
       Assert.True(board.getTopPiece(1) == antW);
     }
 
@@ -352,7 +351,7 @@ namespace Tests
 
       board.movePiece(6, 2);
 
-      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", stringWriter.ToString());
+      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
       Assert.Equal(board.getTopPiece(6), antW);
       Assert.False(board.isOccupied(2));
     }
@@ -374,7 +373,7 @@ namespace Tests
 
       board.movePiece(8, 2);
 
-      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", stringWriter.ToString());
+      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
       Assert.Equal(PieceType.Ant, board.getTopPiece(8).Type);
       Assert.False(board.isOccupied(2));
     }
@@ -423,7 +422,7 @@ namespace Tests
 
       board.movePiece(8, 2);
 
-      Assert.Equal("", stringWriter.ToString());
+      Assert.Equal("", consoleOutCatcher.ToString());
       Assert.False(board.isOccupied(8));
       Assert.Equal(PieceType.Ant, board.getTopPiece(2).Type);
     }
@@ -444,7 +443,7 @@ namespace Tests
 
       board.movePiece(6, 2);
 
-      Assert.Equal("", stringWriter.ToString());
+      Assert.Equal("", consoleOutCatcher.ToString());
       Assert.False(board.isOccupied(6));
       Assert.Equal(PieceType.Ant, board.getTopPiece(2).Type);
     }
@@ -462,7 +461,7 @@ namespace Tests
 
       board.movePiece(1, 2);
 
-      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", stringWriter.ToString());
+      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
       Assert.False(board.isOccupied(2));
       Assert.True(board.getTopPiece(1).Type == PieceType.Spider);
     }
@@ -480,7 +479,7 @@ namespace Tests
 
       board.movePiece(1, 3);
 
-      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", stringWriter.ToString());
+      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
       Assert.False(board.isOccupied(3));
       Assert.True(board.getTopPiece(1).Type == PieceType.Spider);
     }
@@ -516,7 +515,7 @@ namespace Tests
 
       board.movePiece(1, 13);
 
-      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", stringWriter.ToString());
+      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
       Assert.False(board.isOccupied(13));
       Assert.True(board.getTopPiece(1).Type == PieceType.Spider);
     }
@@ -543,7 +542,7 @@ namespace Tests
 
       board.movePiece(0, 1);
 
-      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", stringWriter.ToString());
+      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
       Assert.False(board.isOccupied(1));
       Assert.True(board.getTopPiece(0).Type == PieceType.Spider);
     }
@@ -570,7 +569,7 @@ namespace Tests
 
       board.movePiece(1, 0);
 
-      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", stringWriter.ToString());
+      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
       Assert.False(board.isOccupied(0));
       Assert.True(board.getTopPiece(1).Type == PieceType.Spider);
     }

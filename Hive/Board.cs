@@ -227,7 +227,8 @@ public class Board : ICloneable
       finalReachables.Add(tileStart);
       return finalReachables;
     }
-    HashSet<int> immediateReachables = findImmediateReachablesForAnt(tileStart)
+    HashSet<int> immediateReachables =
+      findImmediateReachablesByPivot(tileStart)
       .ToList().FindAll(adj => !path.Contains(adj)).ToHashSet();
     foreach (int adj in immediateReachables)
     {
@@ -247,7 +248,7 @@ public class Board : ICloneable
     {
       int tile = queue.Dequeue();
       seen.Add(tile);
-      foreach (int adj in findImmediateReachablesForAnt(tile))
+      foreach (int adj in findImmediateReachablesByPivot(tile))
       {
         if (!seen.Contains(adj))
         {
@@ -259,7 +260,7 @@ public class Board : ICloneable
     return ret;
   }
 
-  private HashSet<int> findImmediateReachablesForAnt(int tileNumber)
+  private HashSet<int> findImmediateReachablesByPivot(int tileNumber)
   {
     HashSet<Piece> adjacentPieces = findAdjacentPieces(tileNumber);
     List<int> unoccupiedAdjacents = findUnoccupiedAdjacents(tileNumber);
