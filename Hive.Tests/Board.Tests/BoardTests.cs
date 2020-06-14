@@ -23,9 +23,32 @@ namespace Tests
       consoleOutCatcher.Dispose();
     }
 
+    [Fact]
+    public void testBoardClone()
+    {
+      Piece queen = new Piece(PieceType.Queen, Color.White);
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {queen})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
+        }
+      );
+      Board boardClone = (Board)board.Clone();
+
+      boardClone.movePiece(1, 4);
+
+      Assert.True(board.isOccupied(0));
+      Assert.True(board.isOccupied(1));
+      Assert.Equal(queen, board.getTopPiece(0));
+      Assert.True(boardClone.isOccupied(0));
+      Assert.True(boardClone.isOccupied(4));
+      // Should be a different queen
+      Assert.NotEqual(queen, boardClone.getTopPiece(0));
+    }
 
     [Fact]
-    public void testPlacePiece_validTile_succeeds()
+    public void testPlacePiece_firstPiece_succeeds()
     {
       Piece piece = newPiece();
       Board board = new Board();
@@ -125,104 +148,60 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_beetle_multiplePiecesOnTileEnd_succeeds()
+    public void testMovePiece_multiplePiecesOnOrigin_onlyMovesTopPiece()
     {
-      Piece beetle = new Piece(PieceType.Beetle, Color.White);
-      Piece queen = new Piece(PieceType.Queen, Color.White);
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {beetle})},
-          {1, new List<Piece>(new Piece[] {queen})},
-        }
-      );
-
-      board.movePiece(0, 1);
-
-      Assert.False(board.isOccupied(0));
-      Assert.Equal(beetle, board.getTopPiece(1));
-    }
-
-    [Fact]
-    public void testMovePiece_multiplePiecesOnTileStart_onlyMovesTopPiece()
-    {
-      Piece beetle = new Piece(PieceType.Beetle, Color.White);
-      Piece queen = new Piece(PieceType.Queen, Color.White);
-      Board board = new Board(
-        new Dictionary<int, List<Piece>>
-        {
-          {1, new List<Piece>(new Piece[] {queen, beetle})},
+          {1, new List<Piece>(new Piece[] {
+            new Piece(PieceType.Queen, Color.White),
+            new Piece(PieceType.Beetle, Color.White)
+          })},
         }
       );
 
       board.movePiece(1, 2);
 
-      Assert.True(board.isOccupied(1));
-      Assert.True(board.isOccupied(2));
-      Assert.Equal(beetle, board.getTopPiece(2));
-    }
-
-    [Fact]
-    public void testBoardClone()
-    {
-      Piece queen = new Piece(PieceType.Queen, Color.White);
-      Board board = new Board(
-        new Dictionary<int, List<Piece>>
-        {
-          {0, new List<Piece>(new Piece[] {queen})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-        }
-      );
-      Board boardClone = (Board)board.Clone();
-
-      boardClone.movePiece(1, 4);
-
-      Assert.True(board.isOccupied(0));
-      Assert.True(board.isOccupied(1));
-      Assert.Equal(queen, board.getTopPiece(0));
-      Assert.True(boardClone.isOccupied(0));
-      Assert.True(boardClone.isOccupied(4));
-      // Should be a different queen
-      Assert.NotEqual(queen, boardClone.getTopPiece(0));
+      Assert.Equal(PieceType.Queen, board.getTopPiece(1).Type);
+      Assert.Equal(PieceType.Beetle, board.getTopPiece(2).Type);
     }
 
     [Fact]
     public void testMovePiece_wouldBreakOneHiveRule_fails_1()
     {
-      Piece queen = new Piece(PieceType.Queen, Color.White);
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] { queen })},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
           {1, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {4, new List<Piece>(new Piece[] { new Piece(PieceType.Beetle, Color.White)})},
+          {4, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
         }
       );
 
       board.movePiece(0, 2);
 
-      Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", consoleOutCatcher.ToString());
-      Assert.Equal(queen, board.getTopPiece(0));
+      Assert.Equal(
+        $"{ErrorMessages.ONE_HIVE}\n", consoleOutCatcher.ToString());
+      Assert.Equal(PieceType.Queen, board.getTopPiece(0).Type);
     }
 
     [Fact]
     public void testMovePiece_wouldBreakOneHiveRule_fails_2()
     {
-      Piece queenW = new Piece(PieceType.Queen, Color.White);
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] { queenW})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
           {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.Black)})},
-          {3, new List<Piece>(new Piece[] { new Piece(PieceType.Ant, Color.White)})},
-          {4, new List<Piece>(new Piece[] { new Piece(PieceType.Beetle, Color.White)})},
+          {3, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
+          {4, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
         }
       );
 
       board.movePiece(0, 2);
 
       Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", consoleOutCatcher.ToString());
-      Assert.Equal(queenW, board.getTopPiece(0));
+      Assert.Equal(PieceType.Queen, board.getTopPiece(0).Type);
     }
 
     [Fact]
@@ -254,11 +233,10 @@ namespace Tests
     [Fact]
     public void testMovePiece_wouldBreakOneHiveRule_fails_4()
     {
-      Piece queenW = new Piece(PieceType.Queen, Color.White);
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {queenW})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
           {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.Black)})},
           {3, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
           {7, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.Black)})},
@@ -272,25 +250,24 @@ namespace Tests
       board.movePiece(0, 2);
 
       Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", consoleOutCatcher.ToString());
-      Assert.Equal(queenW, board.getTopPiece(0));
+      Assert.Equal(PieceType.Queen, board.getTopPiece(0).Type);
     }
 
     [Fact]
     public void testMovePiece_wouldBreakOneHiveRule_fails_5()
     {
-      Piece ant = new Piece(PieceType.Ant, Color.White);
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
           {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {1, new List<Piece>(new Piece[] { ant })},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
         }
       );
 
       board.movePiece(1, 7);
 
       Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", consoleOutCatcher.ToString());
-      Assert.Equal(ant, board.getTopPiece(1));
+      Assert.Equal(PieceType.Ant, board.getTopPiece(1).Type);
     }
 
     [Fact]
@@ -315,22 +292,97 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_nonBeetle_ontoOccupiedTile_fails()
+    public void testMovePiece_ant_accrossManageableGap_succeeds()
     {
-      Piece antW = new Piece(PieceType.Ant, Color.White);
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          // White pieces
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
+          {6, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
+          {18, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
+          {5, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
+          {14, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
+          {16, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
+          // Black pieces
+          {8, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.Black)})},
+          {2, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.Black)})},
+          {10, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.Black)})},
+          {11, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.Black)})},
+          {12, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.Black)})},
+        }
+      );
+
+      board.movePiece(16, 9);
+
+      Assert.False(board.isOccupied(16));
+      Assert.True(board.isOccupied(9));
+    }
+
+    [Fact]
+    public void testMovePiece_ant_throughSpaceWithOneEdge_fails()
+    {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
           {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {1, new List<Piece>(new Piece[] {antW})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.Black)})},
+          {3, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
+          {8, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.Black)})},
+          {10, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
+          {6, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
         }
       );
 
-      board.movePiece(1, 0);
+      board.movePiece(6, 2);
 
       Assert.Equal(
-        $"{ErrorMessages.PIECE_STACKING}\n", consoleOutCatcher.ToString());
-      Assert.Equal(antW, board.getTopPiece(1));
+        $"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
+      Assert.Equal(PieceType.Ant, board.getTopPiece(6).Type);
+      Assert.False(board.isOccupied(2));
+    }
+
+    [Fact]
+    public void testMovePiece_ant_throughSpaceWithOneEdge_destIsAdjacentToOrigin_fails()
+    {
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {8, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
+          {3, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
+          {9, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
+          {10, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
+        }
+      );
+
+      board.movePiece(8, 2);
+
+      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
+      Assert.Equal(PieceType.Ant, board.getTopPiece(8).Type);
+      Assert.False(board.isOccupied(2));
+    }
+
+    [Fact]
+    public void testMovePiece_ant_throughSpaceWithTwoEdges_succeeds()
+    {
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
+          {3, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
+          {10, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
+          {6, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
+        }
+      );
+
+      board.movePiece(6, 2);
+
+      Assert.Equal("", consoleOutCatcher.ToString());
+      Assert.False(board.isOccupied(6));
+      Assert.Equal(PieceType.Ant, board.getTopPiece(2).Type);
     }
 
     [Fact]
@@ -575,76 +627,22 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_ant_throughSpaceWithOneEdge_fails()
+    public void testMovePiece_grasshopper_crookedJump_fails()
     {
-      Piece antW = new Piece(PieceType.Ant, Color.White);
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
           {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {1, new List<Piece>(new Piece[] { new Piece(PieceType.Queen, Color.Black)})},
-          {3, new List<Piece>(new Piece[] { new Piece(PieceType.Gh, Color.White)})},
-          {8, new List<Piece>(new Piece[] { new Piece(PieceType.Ant, Color.Black)})},
-          {10, new List<Piece>(new Piece[] { new Piece(PieceType.Beetle, Color.White)})},
-          {6, new List<Piece>(new Piece[] {antW})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
         }
       );
 
-      board.movePiece(6, 2);
+      board.movePiece(1, 3);
 
-      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
-      Assert.Equal(board.getTopPiece(6), antW);
-      Assert.False(board.isOccupied(2));
-    }
-
-    [Fact]
-    public void testMovePiece_ant_throughSpaceWithOneEdge_destIsAdjacentToOrigin_fails()
-    {
-      Board board = new Board(
-        new Dictionary<int, List<Piece>>
-        {
-          {8, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
-          {3, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
-          {9, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {10, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
-        }
-      );
-
-      board.movePiece(8, 2);
-
-      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
-      Assert.Equal(PieceType.Ant, board.getTopPiece(8).Type);
-      Assert.False(board.isOccupied(2));
-    }
-
-    [Fact]
-    public void testMovePiece_ant_accrossManageableGap_succeeds()
-    {
-      Board board = new Board(
-        new Dictionary<int, List<Piece>>
-        {
-          // White pieces
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {6, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {18, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {5, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
-          {14, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
-          {16, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          // Black pieces
-          {8, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.Black)})},
-          {2, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.Black)})},
-          {10, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.Black)})},
-          {11, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.Black)})},
-          {12, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.Black)})},
-        }
-      );
-
-      board.movePiece(16, 9);
-
-      Assert.False(board.isOccupied(16));
-      Assert.True(board.isOccupied(9));
+      Assert.Equal(
+        $"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
+      Assert.Equal(PieceType.Gh, board.getTopPiece(1).Type);
+      Assert.False(board.isOccupied(3));
     }
 
     [Fact]
@@ -725,27 +723,6 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_ant_throughSpaceWithTwoEdges_succeeds()
-    {
-      Board board = new Board(
-        new Dictionary<int, List<Piece>>
-        {
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
-          {3, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
-          {10, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {6, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-        }
-      );
-
-      board.movePiece(6, 2);
-
-      Assert.Equal("", consoleOutCatcher.ToString());
-      Assert.False(board.isOccupied(6));
-      Assert.Equal(PieceType.Ant, board.getTopPiece(2).Type);
-    }
-
-    [Fact]
     public void testMovePiece_spider_oneTileTraveled_fails()
     {
       Board board = new Board(
@@ -818,57 +795,51 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_spider_cannotBacktrackOntoOrigin()
+    public void testMovePiece_spider_backtracking_fails_1()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {7, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
           {8, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {2, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {3, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
+          {9, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
+          {10, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
+          {11, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
           {12, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {13, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {14, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {5, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
-          {6, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
-          {18, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
+          {4, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
           {0, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
         }
       );
 
-      board.movePiece(0, 1);
+      board.movePiece(0, 2);
 
       Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
-      Assert.False(board.isOccupied(1));
+      Assert.False(board.isOccupied(2));
       Assert.Equal(PieceType.Spider, board.getTopPiece(0).Type);
     }
 
     [Fact]
-    public void testMovePiece_spider_cannotBacktrackOntoFirstVisitedTile()
+    public void testMovePiece_spider_backtracking_fails_2()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {7, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
           {8, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {2, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {3, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
+          {9, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
+          {10, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
+          {11, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
           {12, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {13, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {14, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {5, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
-          {6, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
-          {18, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
+          {4, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
         }
       );
 
-      board.movePiece(1, 0);
+      board.movePiece(0, 3);
 
       Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
-      Assert.False(board.isOccupied(0));
-      Assert.Equal(PieceType.Spider, board.getTopPiece(1).Type);
+      Assert.False(board.isOccupied(3));
+      Assert.Equal(PieceType.Spider, board.getTopPiece(0).Type);
     }
 
     [Fact]
