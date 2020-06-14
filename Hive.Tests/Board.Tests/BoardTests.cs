@@ -1,6 +1,7 @@
 using System;
-using Xunit;
+using System.Collections.Generic;
 using System.IO;
+using Xunit;
 
 namespace Tests
 {
@@ -40,9 +41,12 @@ namespace Tests
     {
       Piece piece1 = newPiece();
       Piece piece2 = newPiece();
-      Board board = new Board();
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>{
+          {0, new List<Piece>(new Piece[] {piece1})},
+        }
+      );
 
-      board.placePiece(0, piece1);
       board.placePiece(0, piece2);
 
       Assert.Single(board.getPieces(0));

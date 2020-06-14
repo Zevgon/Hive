@@ -14,6 +14,11 @@ public class Board : ICloneable
     PieceMap = new Dictionary<int, List<Piece>>();
   }
 
+  public Board(Dictionary<int, List<Piece>> pieceMap)
+  {
+    PieceMap = pieceMap;
+  }
+
   protected Board(Board other)
   {
     PieceMap = Util.cloneDictionary(other.PieceMap);
