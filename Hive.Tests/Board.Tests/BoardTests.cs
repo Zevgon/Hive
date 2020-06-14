@@ -267,7 +267,8 @@ namespace Tests
 
       board.movePiece(1, 0);
 
-      Assert.Equal($"{ErrorMessages.PIECE_STACKING}\n", stringWriter.ToString());
+      Assert.Equal(
+        $"{ErrorMessages.PIECE_STACKING}\n", stringWriter.ToString());
       Assert.True(board.getTopPiece(1) == antW);
     }
 
@@ -316,9 +317,27 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_antFromOutsideEdgeToEnclosedEdge_fails()
+    public void testMovePiece_antCrossingManageableGap_succeeds()
     {
-      // TODO
+      Board board = new Board();
+      // 0, 6, 18, 5, 14, 16
+      // 2, 8, 10, 11, 12
+      board.placePiece(0, new Piece(PieceType.Queen, Color.White));
+      board.placePiece(2, new Piece(PieceType.Queen, Color.Black));
+      board.placePiece(6, new Piece(PieceType.Ant, Color.White));
+      board.placePiece(8, new Piece(PieceType.Ant, Color.Black));
+      board.placePiece(18, new Piece(PieceType.Gh, Color.White));
+      board.placePiece(10, new Piece(PieceType.Gh, Color.Black));
+      board.placePiece(5, new Piece(PieceType.Beetle, Color.White));
+      board.placePiece(11, new Piece(PieceType.Beetle, Color.Black));
+      board.placePiece(14, new Piece(PieceType.Spider, Color.White));
+      board.placePiece(12, new Piece(PieceType.Spider, Color.Black));
+      board.placePiece(16, new Piece(PieceType.Ant, Color.White));
+
+      board.movePiece(16, 9);
+
+      Assert.False(board.isOccupied(16));
+      Assert.True(board.isOccupied(9));
     }
 
     [Fact]
