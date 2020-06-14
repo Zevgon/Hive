@@ -148,7 +148,7 @@ public class Board : ICloneable
       .ToHashSet();
   }
 
-  private HashSet<int> findImmediateReachablesByPivot(int tileNumber)
+  private HashSet<int> findUnoccupiedAdjacentsByPivot(int tileNumber)
   {
     HashSet<Piece> adjacentPieces = findAdjacentPieces(tileNumber);
     List<int> unoccupiedAdjacents = findUnoccupiedAdjacents(tileNumber);
@@ -173,10 +173,31 @@ public class Board : ICloneable
     return Util.findAdjacents(tileNumber).FindAll(adj => !isOccupied(adj));
   }
 
+  private HashSet<int> findReachableTilesForAnt(int tileStart)
+  {
+    Queue<int> queue = new Queue<int>(new int[] { tileStart });
+    HashSet<int> seen = new HashSet<int>(new int[] { tileStart });
+    HashSet<int> ret = new HashSet<int>();
+    while (queue.Count > 0)
+    {
+      int tile = queue.Dequeue();
+      seen.Add(tile);
+      foreach (int adj in findUnoccupiedAdjacentsByPivot(tile))
+      {
+        if (!seen.Contains(adj))
+        {
+          queue.Enqueue(adj);
+          ret.Add(adj);
+        }
+      }
+    }
+    return ret;
+  }
+
   private HashSet<int> findReachableTilesForBeetle(int tileStart)
   {
     HashSet<int> immediateUnoccupiedReachables =
-      findImmediateReachablesByPivot(tileStart);
+      findUnoccupiedAdjacentsByPivot(tileStart);
     List<int> immediateOccupiedReachables = findOccupiedAdjacents(tileStart);
     List<int> unoccupiedAdjacentsFromOccupiedTile = new List<int>();
     if (isOccupied(tileStart))
@@ -189,27 +210,6 @@ public class Board : ICloneable
       .ToHashSet();
   }
 
-  private HashSet<int> findReachableTilesForAnt(int tileStart)
-  {
-    Queue<int> queue = new Queue<int>(new int[] { tileStart });
-    HashSet<int> seen = new HashSet<int>(new int[] { tileStart });
-    HashSet<int> ret = new HashSet<int>();
-    while (queue.Count > 0)
-    {
-      int tile = queue.Dequeue();
-      seen.Add(tile);
-      foreach (int adj in findImmediateReachablesByPivot(tile))
-      {
-        if (!seen.Contains(adj))
-        {
-          queue.Enqueue(adj);
-          ret.Add(adj);
-        }
-      }
-    }
-    return ret;
-  }
-
   private HashSet<int> findReachableTilesForGh(int tileStart)
   {
     HashSet<int> occupiedAdjacents = findOccupiedAdjacents(tileStart).ToHashSet();
@@ -217,6 +217,14 @@ public class Board : ICloneable
       .ConvertAll(adj => Util.findNextInLine(tileStart, adj))
       .FindAll(possibleDest => !isOccupied(possibleDest))
       .ToHashSet();
+  }
+
+  private HashSet<int> findReachableTilesForQueen(
+    int tileStart,
+    HashSet<int> finalReachables = null,
+    List<int> path = null)
+  {
+    return findUnoccupiedAdjacentsByPivot(tileStart);
   }
 
   private HashSet<int> findReachableTilesForSpider(
@@ -232,7 +240,7 @@ public class Board : ICloneable
       return finalReachables;
     }
     HashSet<int> immediateReachables =
-      findImmediateReachablesByPivot(tileStart)
+      findUnoccupiedAdjacentsByPivot(tileStart)
       .ToList().FindAll(adj => !path.Contains(adj)).ToHashSet();
     foreach (int adj in immediateReachables)
     {
@@ -329,14 +337,17 @@ public class Board : ICloneable
       case PieceType.Ant:
         validateAntCanReach(tileStart, tileEnd);
         return;
-      case PieceType.Spider:
-        validateSpiderCanReach(tileStart, tileEnd);
+      case PieceType.Beetle:
+        validateBeetleCanReach(tileStart, tileEnd);
         return;
       case PieceType.Gh:
         validateGhCanReach(tileStart, tileEnd);
         return;
-      case PieceType.Beetle:
-        validateBeetleCanReach(tileStart, tileEnd);
+      case PieceType.Queen:
+        validateQueenCanReach(tileStart, tileEnd);
+        return;
+      case PieceType.Spider:
+        validateSpiderCanReach(tileStart, tileEnd);
         return;
       default:
         return;
@@ -349,6 +360,17 @@ public class Board : ICloneable
     if (isOccupied(tileEnd) && piece.Type != PieceType.Beetle)
     {
       throw new ArgumentException(ErrorMessages.PIECE_STACKING);
+    }
+  }
+
+  private void validateQueenCanReach(int tileStart, int tileEnd)
+  {
+    Board boardClone = (Board)this.Clone();
+    boardClone.removePiece(tileStart);
+    HashSet<int> reachableTiles = boardClone.findReachableTilesForQueen(tileStart);
+    if (!reachableTiles.Contains(tileEnd))
+    {
+      throw new ArgumentException(ErrorMessages.ILLEGAL_MOVE);
     }
   }
 
