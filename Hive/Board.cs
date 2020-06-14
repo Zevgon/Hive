@@ -28,8 +28,7 @@ public class Board : ICloneable
   {
     try
     {
-      validateUnoccupied(tileNumber);
-      validateNoAdjacentOppositeColors(tileNumber, piece);
+      validatePlacement(tileNumber, piece);
       PieceMap[tileNumber] = new List<Piece>(new Piece[] { piece });
     }
     catch (ArgumentException e)
@@ -74,14 +73,7 @@ public class Board : ICloneable
 
   // Private methods
 
-  private List<Piece> getPieces(int tileNumber)
-  {
-    if (isOccupied(tileNumber))
-    {
-      return PieceMap[tileNumber];
-    }
-    return new List<Piece>();
-  }
+  // Direct board interactions
 
   private void addPiece(int tileNumber, Piece piece)
   {
@@ -93,6 +85,15 @@ public class Board : ICloneable
     {
       PieceMap[tileNumber] = new List<Piece>(new Piece[] { piece });
     }
+  }
+
+  private List<Piece> getPieces(int tileNumber)
+  {
+    if (isOccupied(tileNumber))
+    {
+      return PieceMap[tileNumber];
+    }
+    return new List<Piece>();
   }
 
   private Piece removePiece(int tileNumber)
@@ -115,6 +116,8 @@ public class Board : ICloneable
     }
   }
 
+  // Validations
+
   private void validateMove(int tileStart, int tileEnd)
   {
     validateOneHive(tileStart, tileEnd);
@@ -122,79 +125,41 @@ public class Board : ICloneable
     validatePieceCanReach(tileStart, tileEnd);
   }
 
-  private void validateOneHive(int tileStart, int tileEnd)
+  private void validatePlacement(int tileNumber, Piece piece)
   {
-    Board boardClone = (Board)this.Clone();
-    Piece piece = boardClone.removePiece(tileStart);
-    boardClone.checkMultipleIslands();
-    boardClone.addPiece(tileEnd, piece);
-    boardClone.checkMultipleIslands();
+    validateUnoccupied(tileNumber);
+    validateNoAdjacentOppositeColors(tileNumber, piece);
   }
 
-  private void validatePieceStacking(int tileStart, int tileEnd)
+  // Validation helper methods
+
+  private void checkMultipleIslands()
   {
-    Piece piece = getTopPiece(tileStart);
-    if (isOccupied(tileEnd) && piece.Type != PieceType.Beetle)
+    if (hasMultipleIslands())
     {
-      throw new ArgumentException(ErrorMessages.PIECE_STACKING);
+      throw new ArgumentException(ErrorMessages.ONE_HIVE);
     }
   }
 
-  private void validateUnoccupied(int tileNumber)
+  private HashSet<Piece> findAdjacentPieces(int tileNumber)
   {
-    if (isOccupied(tileNumber))
-    {
-      throw new ArgumentException(ErrorMessages.TILE_OCCUPIED);
-    }
+    return findOccupiedAdjacents(tileNumber)
+      .ConvertAll(getTopPiece)
+      .ToHashSet();
   }
 
-  private void validateNoAdjacentOppositeColors(int tileNumber, Piece piece)
+  private HashSet<int> findImmediateReachablesByPivot(int tileNumber)
   {
-    HashSet<Piece> adjacentPieces = findOccupiedAdjacents(tileNumber)
-      .ConvertAll(adj => getTopPiece(adj)).ToHashSet();
-    if (PieceMap.Count > 1 &&
-        adjacentPieces.Any(adjPiece => adjPiece.Color != piece.Color))
+    HashSet<Piece> adjacentPieces = findAdjacentPieces(tileNumber);
+    List<int> unoccupiedAdjacents = findUnoccupiedAdjacents(tileNumber);
+    return unoccupiedAdjacents.FindAll(adj =>
     {
-      throw new ArgumentException(ErrorMessages.PLACEMENT_ADJACENCY);
-    }
-  }
-
-  private void validateAntCanReach(int tileStart, int tileEnd)
-  {
-    Board boardClone = (Board)this.Clone();
-    boardClone.removePiece(tileStart);
-    HashSet<int> reachableTiles = boardClone.findReachableTilesForAnt(tileStart);
-    if (!reachableTiles.Contains(tileEnd))
-    {
-      throw new ArgumentException(ErrorMessages.ILLEGAL_MOVE);
-    }
-  }
-
-  private void validateSpiderCanReach(int tileStart, int tileEnd)
-  {
-    Board boardClone = (Board)this.Clone();
-    boardClone.removePiece(tileStart);
-    HashSet<int> reachableTiles = boardClone.findReachableTilesForSpider(tileStart);
-    if (!reachableTiles.Contains(tileEnd))
-    {
-      throw new ArgumentException(ErrorMessages.ILLEGAL_MOVE);
-    }
-  }
-
-  private void validatePieceCanReach(int tileStart, int tileEnd)
-  {
-    Piece piece = getTopPiece(tileStart);
-    switch (piece.Type)
-    {
-      case PieceType.Ant:
-        validateAntCanReach(tileStart, tileEnd);
-        return;
-      case PieceType.Spider:
-        validateSpiderCanReach(tileStart, tileEnd);
-        return;
-      default:
-        return;
-    }
+      if (findAdjacentPieces(adj).Intersect(adjacentPieces).Count() == 0)
+      {
+        return false;
+      }
+      return !isTooNarrow(tileNumber, adj);
+    }).ToHashSet();
   }
 
   private List<int> findOccupiedAdjacents(int tileNumber)
@@ -207,12 +172,25 @@ public class Board : ICloneable
     return Util.findAdjacents(tileNumber).FindAll(adj => !isOccupied(adj));
   }
 
-  private void checkMultipleIslands()
+  private HashSet<int> findReachableTilesForAnt(int tileStart)
   {
-    if (hasMultipleIslands())
+    Queue<int> queue = new Queue<int>(new int[] { tileStart });
+    HashSet<int> seen = new HashSet<int>(new int[] { tileStart });
+    HashSet<int> ret = new HashSet<int>();
+    while (queue.Count > 0)
     {
-      throw new ArgumentException(ErrorMessages.ONE_HIVE);
+      int tile = queue.Dequeue();
+      seen.Add(tile);
+      foreach (int adj in findImmediateReachablesByPivot(tile))
+      {
+        if (!seen.Contains(adj))
+        {
+          queue.Enqueue(adj);
+          ret.Add(adj);
+        }
+      }
     }
+    return ret;
   }
 
   private HashSet<int> findReachableTilesForSpider(
@@ -239,55 +217,6 @@ public class Board : ICloneable
     return finalReachables;
   }
 
-  private HashSet<int> findReachableTilesForAnt(int tileStart)
-  {
-    Queue<int> queue = new Queue<int>(new int[] { tileStart });
-    HashSet<int> seen = new HashSet<int>(new int[] { tileStart });
-    HashSet<int> ret = new HashSet<int>();
-    while (queue.Count > 0)
-    {
-      int tile = queue.Dequeue();
-      seen.Add(tile);
-      foreach (int adj in findImmediateReachablesByPivot(tile))
-      {
-        if (!seen.Contains(adj))
-        {
-          queue.Enqueue(adj);
-          ret.Add(adj);
-        }
-      }
-    }
-    return ret;
-  }
-
-  private HashSet<int> findImmediateReachablesByPivot(int tileNumber)
-  {
-    HashSet<Piece> adjacentPieces = findAdjacentPieces(tileNumber);
-    List<int> unoccupiedAdjacents = findUnoccupiedAdjacents(tileNumber);
-    return unoccupiedAdjacents.FindAll(adj =>
-    {
-      if (findAdjacentPieces(adj).Intersect(adjacentPieces).Count() == 0)
-      {
-        return false;
-      }
-      return !isTooNarrow(tileNumber, adj);
-    }).ToHashSet();
-  }
-
-  private bool isTooNarrow(int tile1, int tile2)
-  {
-    HashSet<int> adjesInCommon = findAdjacents(tile1).ToHashSet()
-      .Intersect(findAdjacents(tile2)).ToHashSet();
-    return adjesInCommon.All(isOccupied);
-  }
-
-  private HashSet<Piece> findAdjacentPieces(int tileNumber)
-  {
-    return findOccupiedAdjacents(tileNumber)
-      .ConvertAll(getTopPiece)
-      .ToHashSet();
-  }
-
   private bool hasMultipleIslands()
   {
     int origin = PieceMap.First().Key;
@@ -306,5 +235,87 @@ public class Board : ICloneable
       }
     }
     return PieceMap.Count != seen.Count;
+  }
+
+  private bool isTooNarrow(int tile1, int tile2)
+  {
+    HashSet<int> adjesInCommon = findAdjacents(tile1).ToHashSet()
+      .Intersect(findAdjacents(tile2)).ToHashSet();
+    return adjesInCommon.All(isOccupied);
+  }
+
+  private void validateAntCanReach(int tileStart, int tileEnd)
+  {
+    Board boardClone = (Board)this.Clone();
+    boardClone.removePiece(tileStart);
+    HashSet<int> reachableTiles = boardClone.findReachableTilesForAnt(tileStart);
+    if (!reachableTiles.Contains(tileEnd))
+    {
+      throw new ArgumentException(ErrorMessages.ILLEGAL_MOVE);
+    }
+  }
+
+  private void validateNoAdjacentOppositeColors(int tileNumber, Piece piece)
+  {
+    HashSet<Piece> adjacentPieces = findOccupiedAdjacents(tileNumber)
+      .ConvertAll(adj => getTopPiece(adj)).ToHashSet();
+    if (PieceMap.Count > 1 &&
+        adjacentPieces.Any(adjPiece => adjPiece.Color != piece.Color))
+    {
+      throw new ArgumentException(ErrorMessages.PLACEMENT_ADJACENCY);
+    }
+  }
+
+  private void validateOneHive(int tileStart, int tileEnd)
+  {
+    Board boardClone = (Board)this.Clone();
+    Piece piece = boardClone.removePiece(tileStart);
+    boardClone.checkMultipleIslands();
+    boardClone.addPiece(tileEnd, piece);
+    boardClone.checkMultipleIslands();
+  }
+
+  private void validatePieceCanReach(int tileStart, int tileEnd)
+  {
+    Piece piece = getTopPiece(tileStart);
+    switch (piece.Type)
+    {
+      case PieceType.Ant:
+        validateAntCanReach(tileStart, tileEnd);
+        return;
+      case PieceType.Spider:
+        validateSpiderCanReach(tileStart, tileEnd);
+        return;
+      default:
+        return;
+    }
+  }
+
+  private void validatePieceStacking(int tileStart, int tileEnd)
+  {
+    Piece piece = getTopPiece(tileStart);
+    if (isOccupied(tileEnd) && piece.Type != PieceType.Beetle)
+    {
+      throw new ArgumentException(ErrorMessages.PIECE_STACKING);
+    }
+  }
+
+  private void validateSpiderCanReach(int tileStart, int tileEnd)
+  {
+    Board boardClone = (Board)this.Clone();
+    boardClone.removePiece(tileStart);
+    HashSet<int> reachableTiles = boardClone.findReachableTilesForSpider(tileStart);
+    if (!reachableTiles.Contains(tileEnd))
+    {
+      throw new ArgumentException(ErrorMessages.ILLEGAL_MOVE);
+    }
+  }
+
+  private void validateUnoccupied(int tileNumber)
+  {
+    if (isOccupied(tileNumber))
+    {
+      throw new ArgumentException(ErrorMessages.TILE_OCCUPIED);
+    }
   }
 }
