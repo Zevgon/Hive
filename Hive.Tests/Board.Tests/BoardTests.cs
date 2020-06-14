@@ -105,7 +105,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_validMove_movesPiece()
+    public void testMovePiece_validMove_movesPieceOffOfOriginAndOntoDest()
     {
       Piece queen = new Piece(PieceType.Queen, Color.White);
       Piece ant = new Piece(PieceType.Ant, Color.White);
@@ -120,8 +120,8 @@ namespace Tests
       board.movePiece(1, 4);
 
       Assert.False(board.isOccupied(1));
-      Assert.True(board.getTopPiece(0) == queen);
-      Assert.True(board.getTopPiece(4) == ant);
+      Assert.Equal(queen, board.getTopPiece(0));
+      Assert.Equal(ant, board.getTopPiece(4));
     }
 
     [Fact]
@@ -140,7 +140,7 @@ namespace Tests
       board.movePiece(0, 1);
 
       Assert.False(board.isOccupied(0));
-      Assert.True(board.getTopPiece(1) == beetle);
+      Assert.Equal(beetle, board.getTopPiece(1));
     }
 
     [Fact]
@@ -159,7 +159,7 @@ namespace Tests
 
       Assert.True(board.isOccupied(1));
       Assert.True(board.isOccupied(2));
-      Assert.True(board.getTopPiece(2) == beetle);
+      Assert.Equal(beetle, board.getTopPiece(2));
     }
 
     [Fact]
@@ -179,11 +179,11 @@ namespace Tests
 
       Assert.True(board.isOccupied(0));
       Assert.True(board.isOccupied(1));
-      Assert.True(board.getTopPiece(0) == queen);
+      Assert.Equal(queen, board.getTopPiece(0));
       Assert.True(boardClone.isOccupied(0));
       Assert.True(boardClone.isOccupied(4));
       // Should be a different queen
-      Assert.False(boardClone.getTopPiece(0) == queen);
+      Assert.NotEqual(queen, boardClone.getTopPiece(0));
     }
 
     [Fact]
@@ -202,7 +202,7 @@ namespace Tests
       board.movePiece(0, 2);
 
       Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", consoleOutCatcher.ToString());
-      Assert.True(board.getTopPiece(0) == queen);
+      Assert.Equal(queen, board.getTopPiece(0));
     }
 
     [Fact]
@@ -222,7 +222,7 @@ namespace Tests
       board.movePiece(0, 2);
 
       Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", consoleOutCatcher.ToString());
-      Assert.True(board.getTopPiece(0) == queenW);
+      Assert.Equal(queenW, board.getTopPiece(0));
     }
 
     [Fact]
@@ -248,7 +248,7 @@ namespace Tests
       board.movePiece(0, 2);
 
       Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", consoleOutCatcher.ToString());
-      Assert.True(board.getTopPiece(0) == queen);
+      Assert.Equal(queen, board.getTopPiece(0));
     }
 
     [Fact]
@@ -272,7 +272,7 @@ namespace Tests
       board.movePiece(0, 2);
 
       Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", consoleOutCatcher.ToString());
-      Assert.True(board.getTopPiece(0) == queenW);
+      Assert.Equal(queenW, board.getTopPiece(0));
     }
 
     [Fact]
@@ -290,7 +290,7 @@ namespace Tests
       board.movePiece(1, 7);
 
       Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", consoleOutCatcher.ToString());
-      Assert.True(board.getTopPiece(1) == ant);
+      Assert.Equal(ant, board.getTopPiece(1));
     }
 
     [Fact]
@@ -310,7 +310,7 @@ namespace Tests
 
       board.movePiece(1, 7);
 
-      Assert.True(board.getTopPiece(7).Type == PieceType.Ant);
+      Assert.Equal(PieceType.Ant, board.getTopPiece(7).Type);
       Assert.False(board.isOccupied(1));
     }
 
@@ -330,7 +330,7 @@ namespace Tests
 
       Assert.Equal(
         $"{ErrorMessages.PIECE_STACKING}\n", consoleOutCatcher.ToString());
-      Assert.True(board.getTopPiece(1) == antW);
+      Assert.Equal(antW, board.getTopPiece(1));
     }
 
     [Fact]
@@ -683,7 +683,7 @@ namespace Tests
 
       Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
       Assert.False(board.isOccupied(2));
-      Assert.True(board.getTopPiece(1).Type == PieceType.Spider);
+      Assert.Equal(PieceType.Spider, board.getTopPiece(1).Type);
     }
 
     [Fact]
@@ -701,7 +701,7 @@ namespace Tests
 
       Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
       Assert.False(board.isOccupied(3));
-      Assert.True(board.getTopPiece(1).Type == PieceType.Spider);
+      Assert.Equal(PieceType.Spider, board.getTopPiece(1).Type);
     }
 
     [Fact]
@@ -718,7 +718,7 @@ namespace Tests
       board.movePiece(1, 4);
 
       Assert.False(board.isOccupied(1));
-      Assert.True(board.getTopPiece(4).Type == PieceType.Spider);
+      Assert.Equal(PieceType.Spider, board.getTopPiece(4).Type);
     }
 
     [Fact]
@@ -737,7 +737,7 @@ namespace Tests
 
       Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
       Assert.False(board.isOccupied(13));
-      Assert.True(board.getTopPiece(1).Type == PieceType.Spider);
+      Assert.Equal(PieceType.Spider, board.getTopPiece(1).Type);
     }
 
     [Fact]
@@ -764,7 +764,7 @@ namespace Tests
 
       Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
       Assert.False(board.isOccupied(1));
-      Assert.True(board.getTopPiece(0).Type == PieceType.Spider);
+      Assert.Equal(PieceType.Spider, board.getTopPiece(0).Type);
     }
 
     [Fact]
@@ -791,7 +791,7 @@ namespace Tests
 
       Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
       Assert.False(board.isOccupied(0));
-      Assert.True(board.getTopPiece(1).Type == PieceType.Spider);
+      Assert.Equal(PieceType.Spider, board.getTopPiece(1).Type);
     }
 
     [Fact]
@@ -814,7 +814,7 @@ namespace Tests
       board.movePiece(6, 2);
 
       Assert.False(board.isOccupied(6));
-      Assert.True(board.getTopPiece(2).Type == PieceType.Spider);
+      Assert.Equal(PieceType.Spider, board.getTopPiece(2).Type);
     }
 
     [Fact]
@@ -837,7 +837,7 @@ namespace Tests
       board.movePiece(6, 3);
 
       Assert.False(board.isOccupied(6));
-      Assert.True(board.getTopPiece(3).Type == PieceType.Spider);
+      Assert.Equal(PieceType.Spider, board.getTopPiece(3).Type);
     }
 
     [Fact]
@@ -859,7 +859,7 @@ namespace Tests
       board.movePiece(6, 14);
 
       Assert.False(board.isOccupied(6));
-      Assert.True(board.getTopPiece(14).Type == PieceType.Spider);
+      Assert.Equal(PieceType.Spider, board.getTopPiece(14).Type);
     }
 
     private Piece newPiece()
