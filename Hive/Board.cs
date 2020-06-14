@@ -5,7 +5,6 @@ using static Util;
 
 public class Board : ICloneable
 {
-  private BoardValidator validator = new BoardValidator();
   // Maps from piece position to the pieces on that position
   private Dictionary<int, List<Piece>> PieceMap { get; }
   private int SPIDER_DISTANCE = 3;
@@ -29,7 +28,7 @@ public class Board : ICloneable
   {
     try
     {
-      validator.validateUnoccupied(this, tileNumber);
+      validateUnoccupied(tileNumber);
       validateNoAdjacentOppositeColors(tileNumber, piece);
       PieceMap[tileNumber] = new List<Piece>(new Piece[] { piece });
     }
@@ -75,7 +74,14 @@ public class Board : ICloneable
 
   // Private methods
 
-  // Direct board interactions
+  private List<Piece> getPieces(int tileNumber)
+  {
+    if (isOccupied(tileNumber))
+    {
+      return PieceMap[tileNumber];
+    }
+    return new List<Piece>();
+  }
 
   private void addPiece(int tileNumber, Piece piece)
   {
@@ -87,15 +93,6 @@ public class Board : ICloneable
     {
       PieceMap[tileNumber] = new List<Piece>(new Piece[] { piece });
     }
-  }
-
-  private List<Piece> getPieces(int tileNumber)
-  {
-    if (isOccupied(tileNumber))
-    {
-      return PieceMap[tileNumber];
-    }
-    return new List<Piece>();
   }
 
   private Piece removePiece(int tileNumber)
@@ -117,8 +114,6 @@ public class Board : ICloneable
         $"Cannot remove piece on tile {tileNumber}. Tile is unoccupied");
     }
   }
-
-  // Validations
 
   private void validateMove(int tileStart, int tileEnd)
   {
@@ -145,31 +140,13 @@ public class Board : ICloneable
     }
   }
 
-  private void validatePieceCanReach(int tileStart, int tileEnd)
+  private void validateUnoccupied(int tileNumber)
   {
-    Piece piece = getTopPiece(tileStart);
-    switch (piece.Type)
+    if (isOccupied(tileNumber))
     {
-      case PieceType.Ant:
-        validateAntCanReach(tileStart, tileEnd);
-        return;
-      case PieceType.Spider:
-        validateSpiderCanReach(tileStart, tileEnd);
-        return;
-      default:
-        return;
+      throw new ArgumentException(ErrorMessages.TILE_OCCUPIED);
     }
   }
-
-  // Validation helper methods
-
-  // private void validateUnoccupied(int tileNumber)
-  // {
-  //   if (isOccupied(tileNumber))
-  //   {
-  //     throw new ArgumentException(ErrorMessages.TILE_OCCUPIED);
-  //   }
-  // }
 
   private void validateNoAdjacentOppositeColors(int tileNumber, Piece piece)
   {
@@ -204,6 +181,22 @@ public class Board : ICloneable
     }
   }
 
+  private void validatePieceCanReach(int tileStart, int tileEnd)
+  {
+    Piece piece = getTopPiece(tileStart);
+    switch (piece.Type)
+    {
+      case PieceType.Ant:
+        validateAntCanReach(tileStart, tileEnd);
+        return;
+      case PieceType.Spider:
+        validateSpiderCanReach(tileStart, tileEnd);
+        return;
+      default:
+        return;
+    }
+  }
+
   private List<int> findOccupiedAdjacents(int tileNumber)
   {
     return Util.findAdjacents(tileNumber).FindAll(isOccupied);
@@ -220,27 +213,6 @@ public class Board : ICloneable
     {
       throw new ArgumentException(ErrorMessages.ONE_HIVE);
     }
-  }
-
-  private HashSet<int> findReachableTilesForAnt(int tileStart)
-  {
-    Queue<int> queue = new Queue<int>(new int[] { tileStart });
-    HashSet<int> seen = new HashSet<int>(new int[] { tileStart });
-    HashSet<int> ret = new HashSet<int>();
-    while (queue.Count > 0)
-    {
-      int tile = queue.Dequeue();
-      seen.Add(tile);
-      foreach (int adj in findImmediateReachablesByPivot(tile))
-      {
-        if (!seen.Contains(adj))
-        {
-          queue.Enqueue(adj);
-          ret.Add(adj);
-        }
-      }
-    }
-    return ret;
   }
 
   private HashSet<int> findReachableTilesForSpider(
@@ -265,6 +237,27 @@ public class Board : ICloneable
       findReachableTilesForSpider(adj, finalReachables, nextPath);
     }
     return finalReachables;
+  }
+
+  private HashSet<int> findReachableTilesForAnt(int tileStart)
+  {
+    Queue<int> queue = new Queue<int>(new int[] { tileStart });
+    HashSet<int> seen = new HashSet<int>(new int[] { tileStart });
+    HashSet<int> ret = new HashSet<int>();
+    while (queue.Count > 0)
+    {
+      int tile = queue.Dequeue();
+      seen.Add(tile);
+      foreach (int adj in findImmediateReachablesByPivot(tile))
+      {
+        if (!seen.Contains(adj))
+        {
+          queue.Enqueue(adj);
+          ret.Add(adj);
+        }
+      }
+    }
+    return ret;
   }
 
   private HashSet<int> findImmediateReachablesByPivot(int tileNumber)
