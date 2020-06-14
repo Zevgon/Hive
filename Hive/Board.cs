@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static ErrorMessages;
 using static Util;
 
 public class Board : ICloneable
@@ -57,15 +56,6 @@ public class Board : ICloneable
     return PieceMap.ContainsKey(tileNumber);
   }
 
-  private List<Piece> getPieces(int tileNumber)
-  {
-    if (isOccupied(tileNumber))
-    {
-      return PieceMap[tileNumber];
-    }
-    return new List<Piece>();
-  }
-
   public Piece getTopPiece(int tileNumber)
   {
     if (!isOccupied(tileNumber))
@@ -83,6 +73,15 @@ public class Board : ICloneable
 
   // Private methods
 
+  private List<Piece> getPieces(int tileNumber)
+  {
+    if (isOccupied(tileNumber))
+    {
+      return PieceMap[tileNumber];
+    }
+    return new List<Piece>();
+  }
+
   private void addPiece(int tileNumber, Piece piece)
   {
     if (PieceMap.ContainsKey(tileNumber))
@@ -97,7 +96,7 @@ public class Board : ICloneable
 
   private Piece removePiece(int tileNumber)
   {
-    if (PieceMap.ContainsKey(tileNumber))
+    if (isOccupied(tileNumber))
     {
       List<Piece> pieces = PieceMap[tileNumber];
       Piece pieceToRemove = pieces[pieces.Count - 1];
@@ -170,6 +169,18 @@ public class Board : ICloneable
     }
   }
 
+  private void validateSpiderCanReach(int tileStart, int tileEnd)
+  {
+    Board boardClone = (Board)this.Clone();
+    boardClone.removePiece(tileStart);
+    HashSet<int> reachableTiles = new HashSet<int>();
+    findReachableTilesForSpider(tileStart, reachableTiles);
+    if (!reachableTiles.Contains(tileEnd))
+    {
+      throw new ArgumentException(ErrorMessages.ILLEGAL_MOVE);
+    }
+  }
+
   private void validatePieceCanReach(int tileStart, int tileEnd)
   {
     Piece piece = getTopPiece(tileStart);
@@ -177,6 +188,9 @@ public class Board : ICloneable
     {
       case PieceType.Ant:
         validateAntCanReach(tileStart, tileEnd);
+        return;
+      case PieceType.Spider:
+        validateSpiderCanReach(tileStart, tileEnd);
         return;
       default:
         return;
@@ -199,6 +213,45 @@ public class Board : ICloneable
     {
       throw new ArgumentException(ErrorMessages.ONE_HIVE);
     }
+  }
+
+  private void findReachableTilesForSpider(
+    int tileStart,
+    HashSet<int> finalReachables,
+    List<int> path = null)
+  {
+    if (path == null) path = new List<int>(new int[] { tileStart });
+    if (finalReachables == null) finalReachables = new HashSet<int>(new int[] { tileStart });
+    if (path.Count == 4)
+    {
+      finalReachables.Add(tileStart);
+      return;
+    }
+    HashSet<int> immediateReachables = findImmediateReachablesForAnt(tileStart)
+      .ToList().FindAll(adj => !path.Contains(adj)).ToHashSet();
+    foreach (int adj in immediateReachables)
+    {
+      List<int> nextPath = new List<int>(path);
+      nextPath.Add(adj);
+      findReachableTilesForSpider(adj, finalReachables, nextPath);
+    }
+    // Queue<int> queue = new Queue<int>(new int[] { tileStart });
+    // HashSet<int> seen = new HashSet<int>(new int[] { tileStart });
+    // HashSet<int> ret = new HashSet<int>();
+    // while (queue.Count > 0)
+    // {
+    //   int tile = queue.Dequeue();
+    //   seen.Add(tile);
+    //   foreach (int adj in findImmediateReachablesForAnt(tile))
+    //   {
+    //     if (!seen.Contains(adj))
+    //     {
+    //       queue.Enqueue(adj);
+    //       ret.Add(adj);
+    //     }
+    //   }
+    // }
+    // return ret;
   }
 
   private HashSet<int> findReachableTilesForAnt(int tileStart)
