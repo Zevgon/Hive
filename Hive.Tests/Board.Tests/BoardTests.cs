@@ -53,6 +53,24 @@ namespace Tests
     }
 
     [Fact]
+    public void testPlacePiece_beetle_tileOccupied_fails()
+    {
+      Piece beetle = new Piece(PieceType.Beetle, Color.White);
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
+        }
+      );
+
+      board.placePiece(0, beetle);
+
+      Assert.Equal(
+         $"{ErrorMessages.TILE_OCCUPIED}\n", consoleOutCatcher.ToString());
+      Assert.Equal(PieceType.Queen, board.getTopPiece(0).Type);
+    }
+
+    [Fact]
     public void testPlacePiece_nextToOppositeColor_onePiecePlaced_succeeds()
     {
       Board board = new Board(
