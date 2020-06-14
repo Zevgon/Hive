@@ -39,16 +39,14 @@ namespace Tests
     [Fact]
     public void testPlacePiece_tileOccupied_fails()
     {
-      Piece piece1 = newPiece();
-      Piece piece2 = newPiece();
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {piece1})},
+          {0, new List<Piece>(new Piece[] {newPiece()})},
         }
       );
 
-      board.placePiece(0, piece2);
+      board.placePiece(0, newPiece());
 
       Assert.Equal(
          $"{ErrorMessages.TILE_OCCUPIED}\n", stringWriter.ToString());
@@ -56,20 +54,33 @@ namespace Tests
     }
 
     [Fact]
-    public void testPlacePiece_nextToOtherColor_fails()
+    public void testPlacePiece_nextToOppositeColor_onePiecePlaced_succeeds()
     {
-      Piece queenW = new Piece(PieceType.Queen, Color.White);
-      Piece queenB = new Piece(PieceType.Queen, Color.Black);
-      Piece antW = new Piece(PieceType.Queen, Color.White);
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {queenW})},
-          {1, new List<Piece>(new Piece[] {queenB})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
         }
       );
 
-      board.placePiece(2, antW);
+      board.placePiece(1, new Piece(PieceType.Queen, Color.Black));
+
+      Assert.True(board.isOccupied(0));
+      Assert.True(board.isOccupied(1));
+    }
+
+    [Fact]
+    public void testPlacePiece_nextToOppositeColor_multiplePiecesPlaced_fails()
+    {
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
+          {1, new List<Piece>(new Piece[] { new Piece(PieceType.Queen, Color.Black)})},
+        }
+      );
+
+      board.placePiece(2, new Piece(PieceType.Queen, Color.White));
 
       Assert.Equal(
          $"{ErrorMessages.PLACEMENT_ADJACENCY}\n", stringWriter.ToString());
@@ -97,25 +108,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_afterMove_tileStartIsUnoccupied()
-    {
-      Piece queen = new Piece(PieceType.Queen, Color.White);
-      Piece ant = new Piece(PieceType.Ant, Color.White);
-      Board board = new Board(
-        new Dictionary<int, List<Piece>>
-        {
-          {0, new List<Piece>(new Piece[] {queen})},
-          {1, new List<Piece>(new Piece[] {ant})},
-        }
-      );
-
-      board.movePiece(1, 4);
-
-      Assert.False(board.isOccupied(1));
-    }
-
-    [Fact]
-    public void testMovePiece_multiplePiecesOnTileEnd_succeeds()
+    public void testMovePiece_beetle_multiplePiecesOnTileEnd_succeeds()
     {
       Piece beetle = new Piece(PieceType.Beetle, Color.White);
       Piece queen = new Piece(PieceType.Queen, Color.White);
@@ -157,13 +150,12 @@ namespace Tests
     [Fact]
     public void testBoardClone()
     {
-      Piece ant = new Piece(PieceType.Ant, Color.White);
       Piece queen = new Piece(PieceType.Queen, Color.White);
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
           {0, new List<Piece>(new Piece[] {queen})},
-          {1, new List<Piece>(new Piece[] {ant})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
         }
       );
       Board boardClone = (Board)board.Clone();
@@ -201,18 +193,14 @@ namespace Tests
     [Fact]
     public void testMovePiece_wouldBreakOneHiveRule_fails2()
     {
-      // TODO: Be able to initialize board with a specific piece map
       Piece queenW = new Piece(PieceType.Queen, Color.White);
-      Piece queenB = new Piece(PieceType.Queen, Color.Black);
-      Piece antW = new Piece(PieceType.Ant, Color.White);
-      Piece beetleW = new Piece(PieceType.Beetle, Color.White);
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {queenW})},
-          {1, new List<Piece>(new Piece[] {queenB})},
-          {3, new List<Piece>(new Piece[] {antW})},
-          {4, new List<Piece>(new Piece[] {beetleW})},
+          {0, new List<Piece>(new Piece[] { queenW})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.Black)})},
+          {3, new List<Piece>(new Piece[] { new Piece(PieceType.Ant, Color.White)})},
+          {4, new List<Piece>(new Piece[] { new Piece(PieceType.Beetle, Color.White)})},
         }
       );
 
@@ -275,13 +263,12 @@ namespace Tests
     [Fact]
     public void testMovePiece_wouldBreakOneHiveRule_fails5()
     {
-      Piece queen = new Piece(PieceType.Queen, Color.White);
       Piece ant = new Piece(PieceType.Ant, Color.White);
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {queen})},
-          {1, new List<Piece>(new Piece[] {ant})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
+          {1, new List<Piece>(new Piece[] { ant })},
         }
       );
 
@@ -300,12 +287,11 @@ namespace Tests
     [Fact]
     public void testMovePiece_nonBeetleOntoOccupiedTile_fails()
     {
-      Piece queenW = new Piece(PieceType.Queen, Color.White);
       Piece antW = new Piece(PieceType.Ant, Color.White);
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {queenW})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
           {1, new List<Piece>(new Piece[] {antW})},
         }
       );
@@ -339,21 +325,14 @@ namespace Tests
     public void testMovePiece_antThroughSpaceWithOneEdge_fails()
     {
       Piece antW = new Piece(PieceType.Ant, Color.White);
-      Piece queenW = new Piece(PieceType.Queen, Color.White);
-      Piece beetleW = new Piece(PieceType.Beetle, Color.White);
-      Piece ghW = new Piece(PieceType.Gh, Color.White);
-      Piece antB = new Piece(PieceType.Ant, Color.Black);
-      Piece queenB = new Piece(PieceType.Queen, Color.Black);
-      Piece beetleB = new Piece(PieceType.Beetle, Color.Black);
-      Piece ghB = new Piece(PieceType.Gh, Color.Black);
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {queenW})},
-          {1, new List<Piece>(new Piece[] {queenB})},
-          {3, new List<Piece>(new Piece[] {ghW})},
-          {8, new List<Piece>(new Piece[] {antB})},
-          {10, new List<Piece>(new Piece[] {beetleW})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
+          {1, new List<Piece>(new Piece[] { new Piece(PieceType.Queen, Color.Black)})},
+          {3, new List<Piece>(new Piece[] { new Piece(PieceType.Gh, Color.White)})},
+          {8, new List<Piece>(new Piece[] { new Piece(PieceType.Ant, Color.Black)})},
+          {10, new List<Piece>(new Piece[] { new Piece(PieceType.Beetle, Color.White)})},
           {6, new List<Piece>(new Piece[] {antW})},
         }
       );
