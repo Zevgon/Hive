@@ -6,6 +6,7 @@ namespace Tests
 {
   public class BoardTests : IDisposable
   {
+    // TODO: rename to consoleOutCatcher
     private StringWriter stringWriter;
     private TextWriter originalOutput;
 
@@ -168,6 +169,7 @@ namespace Tests
     [Fact]
     public void testMovePiece_wouldBreakOneHiveRule_fails2()
     {
+      // TODO: Be able to initialize board with a specific piece map
       Piece queenW = new Piece(PieceType.Queen, Color.White);
       Piece queenB = new Piece(PieceType.Queen, Color.Black);
       Piece antW = new Piece(PieceType.Ant, Color.White);
@@ -317,6 +319,25 @@ namespace Tests
     }
 
     [Fact]
+    public void testMovePiece_antThroughSpaceWithOneEdgeNextToOrigin_fails()
+    {
+      Board board = new Board();
+      // 8, 1, 0, 3, 9, 10
+      board.placePiece(8, new Piece(PieceType.Ant, Color.White));
+      board.placePiece(1, new Piece(PieceType.Queen, Color.White));
+      board.placePiece(0, new Piece(PieceType.Beetle, Color.White));
+      board.placePiece(3, new Piece(PieceType.Spider, Color.White));
+      board.placePiece(9, new Piece(PieceType.Gh, Color.White));
+      board.placePiece(10, new Piece(PieceType.Beetle, Color.White));
+
+      board.movePiece(8, 2);
+
+      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", stringWriter.ToString());
+      Assert.Equal(PieceType.Ant, board.getTopPiece(8).Type);
+      Assert.False(board.isOccupied(2));
+    }
+
+    [Fact]
     public void testMovePiece_antCrossingManageableGap_succeeds()
     {
       Board board = new Board();
@@ -338,6 +359,24 @@ namespace Tests
 
       Assert.False(board.isOccupied(16));
       Assert.True(board.isOccupied(9));
+    }
+
+    [Fact]
+    public void testMovePiece_antWouldBlockItselfIfNotRemovedDuringTransit_succeeds()
+    {
+      Board board = new Board();
+      // 8, 1, 0, 3, 10
+      board.placePiece(8, new Piece(PieceType.Ant, Color.White));
+      board.placePiece(1, new Piece(PieceType.Queen, Color.White));
+      board.placePiece(0, new Piece(PieceType.Beetle, Color.White));
+      board.placePiece(3, new Piece(PieceType.Spider, Color.White));
+      board.placePiece(10, new Piece(PieceType.Gh, Color.White));
+
+      board.movePiece(8, 2);
+
+      Assert.Equal("", stringWriter.ToString());
+      Assert.False(board.isOccupied(8));
+      Assert.Equal(PieceType.Ant, board.getTopPiece(2).Type);
     }
 
     [Fact]
