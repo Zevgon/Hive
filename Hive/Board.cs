@@ -173,8 +173,7 @@ public class Board : ICloneable
   {
     Board boardClone = (Board)this.Clone();
     boardClone.removePiece(tileStart);
-    HashSet<int> reachableTiles = new HashSet<int>();
-    findReachableTilesForSpider(tileStart, reachableTiles);
+    HashSet<int> reachableTiles = findReachableTilesForSpider(tileStart);
     if (!reachableTiles.Contains(tileEnd))
     {
       throw new ArgumentException(ErrorMessages.ILLEGAL_MOVE);
@@ -215,17 +214,17 @@ public class Board : ICloneable
     }
   }
 
-  private void findReachableTilesForSpider(
+  private HashSet<int> findReachableTilesForSpider(
     int tileStart,
-    HashSet<int> finalReachables,
+    HashSet<int> finalReachables = null,
     List<int> path = null)
   {
     if (path == null) path = new List<int>(new int[] { tileStart });
-    if (finalReachables == null) finalReachables = new HashSet<int>(new int[] { tileStart });
+    if (finalReachables == null) finalReachables = new HashSet<int>();
     if (path.Count == 4)
     {
       finalReachables.Add(tileStart);
-      return;
+      return finalReachables;
     }
     HashSet<int> immediateReachables = findImmediateReachablesForAnt(tileStart)
       .ToList().FindAll(adj => !path.Contains(adj)).ToHashSet();
@@ -235,6 +234,7 @@ public class Board : ICloneable
       nextPath.Add(adj);
       findReachableTilesForSpider(adj, finalReachables, nextPath);
     }
+    return finalReachables;
     // Queue<int> queue = new Queue<int>(new int[] { tileStart });
     // HashSet<int> seen = new HashSet<int>(new int[] { tileStart });
     // HashSet<int> ret = new HashSet<int>();
