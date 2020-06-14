@@ -57,7 +57,7 @@ public class Board : ICloneable
     return PieceMap.ContainsKey(tileNumber);
   }
 
-  public List<Piece> getPieces(int tileNumber)
+  private List<Piece> getPieces(int tileNumber)
   {
     if (isOccupied(tileNumber))
     {

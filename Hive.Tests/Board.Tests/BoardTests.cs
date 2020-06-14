@@ -51,7 +51,6 @@ namespace Tests
 
       Assert.Equal(
          $"{ErrorMessages.TILE_OCCUPIED}\n", stringWriter.ToString());
-      Assert.Single(board.getPieces(0));
     }
 
     [Fact]
@@ -124,9 +123,7 @@ namespace Tests
       board.movePiece(0, 1);
 
       Assert.False(board.isOccupied(0));
-      Assert.True(board.isOccupied(1));
       Assert.True(board.getTopPiece(1) == beetle);
-      Assert.True(board.getPieces(1)[0] == queen);
     }
 
     [Fact]
