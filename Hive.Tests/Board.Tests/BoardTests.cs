@@ -42,7 +42,8 @@ namespace Tests
       Piece piece1 = newPiece();
       Piece piece2 = newPiece();
       Board board = new Board(
-        new Dictionary<int, List<Piece>>{
+        new Dictionary<int, List<Piece>>
+        {
           {0, new List<Piece>(new Piece[] {piece1})},
         }
       );
@@ -58,9 +59,13 @@ namespace Tests
       Piece queenW = new Piece(PieceType.Queen, Color.White);
       Piece queenB = new Piece(PieceType.Queen, Color.Black);
       Piece antW = new Piece(PieceType.Queen, Color.White);
-      Board board = new Board();
-      board.placePiece(0, queenW);
-      board.placePiece(1, queenB);
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {queenW})},
+          {1, new List<Piece>(new Piece[] {queenB})},
+        }
+      );
 
       board.placePiece(2, antW);
 
@@ -74,14 +79,19 @@ namespace Tests
     {
       Piece queen = new Piece(PieceType.Queen, Color.White);
       Piece ant = new Piece(PieceType.Ant, Color.White);
-      Board board = new Board();
-      board.placePiece(0, queen);
-      board.placePiece(1, ant);
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {queen})},
+          {1, new List<Piece>(new Piece[] {ant})},
+        }
+      );
 
       board.movePiece(1, 4);
 
-      Assert.True(board.getTopPiece(0) == queen);
+      Assert.False(board.isOccupied(1));
       Assert.True(board.getTopPiece(4) == ant);
+      Assert.True(board.getTopPiece(0) == queen);
     }
 
     [Fact]
@@ -89,9 +99,13 @@ namespace Tests
     {
       Piece queen = new Piece(PieceType.Queen, Color.White);
       Piece ant = new Piece(PieceType.Ant, Color.White);
-      Board board = new Board();
-      board.placePiece(0, queen);
-      board.placePiece(1, ant);
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {queen})},
+          {1, new List<Piece>(new Piece[] {ant})},
+        }
+      );
 
       board.movePiece(1, 4);
 
@@ -103,9 +117,13 @@ namespace Tests
     {
       Piece beetle = new Piece(PieceType.Beetle, Color.White);
       Piece queen = new Piece(PieceType.Queen, Color.White);
-      Board board = new Board();
-      board.placePiece(0, beetle);
-      board.placePiece(1, queen);
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {beetle})},
+          {1, new List<Piece>(new Piece[] {queen})},
+        }
+      );
 
       board.movePiece(0, 1);
 
@@ -120,11 +138,13 @@ namespace Tests
     {
       Piece beetle = new Piece(PieceType.Beetle, Color.White);
       Piece queen = new Piece(PieceType.Queen, Color.White);
-      Board board = new Board();
-      board.placePiece(0, beetle);
-      board.placePiece(1, queen);
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {1, new List<Piece>(new Piece[] {queen, beetle})},
+        }
+      );
 
-      board.movePiece(0, 1);
       board.movePiece(1, 2);
 
       Assert.True(board.isOccupied(1));
@@ -137,9 +157,13 @@ namespace Tests
     {
       Piece ant = new Piece(PieceType.Ant, Color.White);
       Piece queen = new Piece(PieceType.Queen, Color.White);
-      Board board = new Board();
-      board.placePiece(0, queen);
-      board.placePiece(1, ant);
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {queen})},
+          {1, new List<Piece>(new Piece[] {ant})},
+        }
+      );
       Board boardClone = (Board)board.Clone();
 
       boardClone.movePiece(1, 4);
@@ -159,10 +183,14 @@ namespace Tests
       Piece ant = new Piece(PieceType.Ant, Color.White);
       Piece queen = new Piece(PieceType.Queen, Color.White);
       Piece beetle = new Piece(PieceType.Beetle, Color.White);
-      Board board = new Board();
-      board.placePiece(0, queen);
-      board.placePiece(1, ant);
-      board.placePiece(4, beetle);
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {queen})},
+          {1, new List<Piece>(new Piece[] {ant})},
+          {4, new List<Piece>(new Piece[] {beetle})},
+        }
+      );
 
       board.movePiece(0, 2);
 
@@ -178,11 +206,15 @@ namespace Tests
       Piece queenB = new Piece(PieceType.Queen, Color.Black);
       Piece antW = new Piece(PieceType.Ant, Color.White);
       Piece beetleW = new Piece(PieceType.Beetle, Color.White);
-      Board board = new Board();
-      board.placePiece(0, queenW);
-      board.placePiece(1, queenB);
-      board.placePiece(3, antW);
-      board.placePiece(4, beetleW);
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {queenW})},
+          {1, new List<Piece>(new Piece[] {queenB})},
+          {3, new List<Piece>(new Piece[] {antW})},
+          {4, new List<Piece>(new Piece[] {beetleW})},
+        }
+      );
 
       board.movePiece(0, 2);
 
@@ -198,15 +230,15 @@ namespace Tests
       Piece beetle1 = new Piece(PieceType.Beetle, Color.White);
       Piece beetle2 = new Piece(PieceType.Beetle, Color.White);
       Piece gh = new Piece(PieceType.Gh, Color.White);
-      Board board = new Board();
-      board.placePiece(0, queen);
-      board.placePiece(1, ant);
-      board.placePiece(2, beetle2);
-      board.placePiece(3, beetle2);
-      board.placePiece(4, gh);
-      // Put the beetles onto occupied tiles to maybe mess with piece counts.
-      board.movePiece(2, 1);
-      board.movePiece(3, 4);
+      // Put the beetles onto occupied tiles to try to mess with piece counts.
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {queen})},
+          {1, new List<Piece>(new Piece[] {ant, beetle1})},
+          {4, new List<Piece>(new Piece[] {gh, beetle2})},
+        }
+      );
 
       board.movePiece(0, 2);
 
@@ -225,15 +257,19 @@ namespace Tests
       Piece queenB = new Piece(PieceType.Queen, Color.Black);
       Piece beetleB = new Piece(PieceType.Beetle, Color.Black);
       Piece ghB = new Piece(PieceType.Gh, Color.Black);
-      Board board = new Board();
-      board.placePiece(0, queenW);
-      board.placePiece(1, queenB);
-      board.placePiece(3, antW);
-      board.placePiece(7, antB);
-      board.placePiece(4, beetleW);
-      board.placePiece(8, beetleB);
-      board.placePiece(5, ghW);
-      board.placePiece(20, ghB);
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {queenW})},
+          {1, new List<Piece>(new Piece[] {queenB})},
+          {3, new List<Piece>(new Piece[] {antW})},
+          {7, new List<Piece>(new Piece[] {antB})},
+          {4, new List<Piece>(new Piece[] {beetleW})},
+          {8, new List<Piece>(new Piece[] {beetleB})},
+          {5, new List<Piece>(new Piece[] {ghW})},
+          {20, new List<Piece>(new Piece[] {ghB})},
+        }
+      );
 
       board.movePiece(0, 2);
 
@@ -246,9 +282,13 @@ namespace Tests
     {
       Piece queen = new Piece(PieceType.Queen, Color.White);
       Piece ant = new Piece(PieceType.Ant, Color.White);
-      Board board = new Board();
-      board.placePiece(0, queen);
-      board.placePiece(1, ant);
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {queen})},
+          {1, new List<Piece>(new Piece[] {ant})},
+        }
+      );
 
       board.movePiece(1, 7);
 
@@ -267,9 +307,13 @@ namespace Tests
     {
       Piece queenW = new Piece(PieceType.Queen, Color.White);
       Piece antW = new Piece(PieceType.Ant, Color.White);
-      Board board = new Board();
-      board.placePiece(0, queenW);
-      board.placePiece(1, antW);
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {queenW})},
+          {1, new List<Piece>(new Piece[] {antW})},
+        }
+      );
 
       board.movePiece(1, 0);
 
@@ -307,13 +351,17 @@ namespace Tests
       Piece queenB = new Piece(PieceType.Queen, Color.Black);
       Piece beetleB = new Piece(PieceType.Beetle, Color.Black);
       Piece ghB = new Piece(PieceType.Gh, Color.Black);
-      Board board = new Board();
-      board.placePiece(0, queenW);
-      board.placePiece(1, queenB);
-      board.placePiece(3, ghW);
-      board.placePiece(8, antB);
-      board.placePiece(10, beetleW);
-      board.placePiece(6, antW);
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {queenW})},
+          {1, new List<Piece>(new Piece[] {queenB})},
+          {3, new List<Piece>(new Piece[] {ghW})},
+          {8, new List<Piece>(new Piece[] {antB})},
+          {10, new List<Piece>(new Piece[] {beetleW})},
+          {6, new List<Piece>(new Piece[] {antW})},
+        }
+      );
 
       board.movePiece(6, 2);
 
@@ -325,14 +373,17 @@ namespace Tests
     [Fact]
     public void testMovePiece_antThroughSpaceWithOneEdgeNextToOrigin_fails()
     {
-      Board board = new Board();
-      // 8, 1, 0, 3, 9, 10
-      board.placePiece(8, new Piece(PieceType.Ant, Color.White));
-      board.placePiece(1, new Piece(PieceType.Queen, Color.White));
-      board.placePiece(0, new Piece(PieceType.Beetle, Color.White));
-      board.placePiece(3, new Piece(PieceType.Spider, Color.White));
-      board.placePiece(9, new Piece(PieceType.Gh, Color.White));
-      board.placePiece(10, new Piece(PieceType.Beetle, Color.White));
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {8, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
+          {3, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
+          {9, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
+          {10, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
+        }
+      );
 
       board.movePiece(8, 2);
 
@@ -344,20 +395,24 @@ namespace Tests
     [Fact]
     public void testMovePiece_antCrossingManageableGap_succeeds()
     {
-      Board board = new Board();
-      // 0, 6, 18, 5, 14, 16
-      // 2, 8, 10, 11, 12
-      board.placePiece(0, new Piece(PieceType.Queen, Color.White));
-      board.placePiece(2, new Piece(PieceType.Queen, Color.Black));
-      board.placePiece(6, new Piece(PieceType.Ant, Color.White));
-      board.placePiece(8, new Piece(PieceType.Ant, Color.Black));
-      board.placePiece(18, new Piece(PieceType.Gh, Color.White));
-      board.placePiece(10, new Piece(PieceType.Gh, Color.Black));
-      board.placePiece(5, new Piece(PieceType.Beetle, Color.White));
-      board.placePiece(11, new Piece(PieceType.Beetle, Color.Black));
-      board.placePiece(14, new Piece(PieceType.Spider, Color.White));
-      board.placePiece(12, new Piece(PieceType.Spider, Color.Black));
-      board.placePiece(16, new Piece(PieceType.Ant, Color.White));
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          // White pieces
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
+          {6, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
+          {18, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
+          {5, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
+          {14, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
+          {16, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
+          // Black pieces
+          {8, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.Black)})},
+          {2, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.Black)})},
+          {10, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.Black)})},
+          {11, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.Black)})},
+          {12, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.Black)})},
+        }
+      );
 
       board.movePiece(16, 9);
 
@@ -368,13 +423,16 @@ namespace Tests
     [Fact]
     public void testMovePiece_antWouldBlockItselfIfNotRemovedDuringTransit_succeeds()
     {
-      Board board = new Board();
-      // 8, 1, 0, 3, 10
-      board.placePiece(8, new Piece(PieceType.Ant, Color.White));
-      board.placePiece(1, new Piece(PieceType.Queen, Color.White));
-      board.placePiece(0, new Piece(PieceType.Beetle, Color.White));
-      board.placePiece(3, new Piece(PieceType.Spider, Color.White));
-      board.placePiece(10, new Piece(PieceType.Gh, Color.White));
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {8, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
+          {3, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
+          {10, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
+        }
+      );
 
       board.movePiece(8, 2);
 
