@@ -161,7 +161,9 @@ public class Board : ICloneable
 
   private void validateAntCanReach(int tileStart, int tileEnd)
   {
-    HashSet<int> reachableTiles = findReachableTilesForAnt(tileStart);
+    Board boardClone = (Board)this.Clone();
+    boardClone.removePiece(tileStart);
+    HashSet<int> reachableTiles = boardClone.findReachableTilesForAnt(tileStart);
     if (!reachableTiles.Contains(tileEnd))
     {
       throw new ArgumentException(ErrorMessages.ILLEGAL_MOVE);
