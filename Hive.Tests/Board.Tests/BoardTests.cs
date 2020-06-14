@@ -621,6 +621,28 @@ namespace Tests
       Assert.True(board.getTopPiece(3).Type == PieceType.Spider);
     }
 
+    [Fact]
+    public void testMovePiece_spider_wouldBlockItselfIfNotRemovedDuringTransit_succeeds()
+    {
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
+          {8, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
+          {2, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
+          {3, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
+          {12, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
+          {4, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
+          {6, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
+        }
+      );
+
+      board.movePiece(6, 14);
+
+      Assert.False(board.isOccupied(6));
+      Assert.True(board.getTopPiece(14).Type == PieceType.Spider);
+    }
+
     private Piece newPiece()
     {
       return new Piece(PieceType.Spider, Color.White);

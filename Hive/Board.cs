@@ -7,6 +7,7 @@ public class Board : ICloneable
 {
   // Maps from piece position to the pieces on that position
   private Dictionary<int, List<Piece>> PieceMap { get; }
+  private int SPIDER_DISTANCE = 3;
 
   public Board()
   {
@@ -173,7 +174,7 @@ public class Board : ICloneable
   {
     Board boardClone = (Board)this.Clone();
     boardClone.removePiece(tileStart);
-    HashSet<int> reachableTiles = findReachableTilesForSpider(tileStart);
+    HashSet<int> reachableTiles = boardClone.findReachableTilesForSpider(tileStart);
     if (!reachableTiles.Contains(tileEnd))
     {
       throw new ArgumentException(ErrorMessages.ILLEGAL_MOVE);
@@ -221,7 +222,7 @@ public class Board : ICloneable
   {
     if (path == null) path = new List<int>(new int[] { tileStart });
     if (finalReachables == null) finalReachables = new HashSet<int>();
-    if (path.Count == 4)
+    if (path.Count == SPIDER_DISTANCE + 1)
     {
       finalReachables.Add(tileStart);
       return finalReachables;
@@ -235,23 +236,6 @@ public class Board : ICloneable
       findReachableTilesForSpider(adj, finalReachables, nextPath);
     }
     return finalReachables;
-    // Queue<int> queue = new Queue<int>(new int[] { tileStart });
-    // HashSet<int> seen = new HashSet<int>(new int[] { tileStart });
-    // HashSet<int> ret = new HashSet<int>();
-    // while (queue.Count > 0)
-    // {
-    //   int tile = queue.Dequeue();
-    //   seen.Add(tile);
-    //   foreach (int adj in findImmediateReachablesForAnt(tile))
-    //   {
-    //     if (!seen.Contains(adj))
-    //     {
-    //       queue.Enqueue(adj);
-    //       ret.Add(adj);
-    //     }
-    //   }
-    // }
-    // return ret;
   }
 
   private HashSet<int> findReachableTilesForAnt(int tileStart)
