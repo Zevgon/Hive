@@ -6,5 +6,7 @@ public class ErrorMessages
   public static string PIECE_STACKING =
     "Illegal move. Cannot move a piece on top of another piece unless it's a beetle";
   public static string PLACEMENT_ADJACENCY =
-      "Illegal placement. Cannot place a piece next to another piece of the opposite color";
+    "Illegal placement. Cannot place a piece next to another piece of the opposite color";
+  public static string TILE_OCCUPIED =
+    "Illegal placement. Cannot place a piece on top of another piece";
 }

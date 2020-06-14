@@ -28,7 +28,8 @@ public class Board : ICloneable
   {
     try
     {
-      validatePlacement(tileNumber, piece);
+      validateUnoccupied(tileNumber);
+      validateNoAdjacentOppositeColors(tileNumber, piece);
       PieceMap[tileNumber] = new List<Piece>(new Piece[] { piece });
     }
     catch (ArgumentException e)
@@ -139,7 +140,15 @@ public class Board : ICloneable
     }
   }
 
-  private void validatePlacement(int tileNumber, Piece piece)
+  private void validateUnoccupied(int tileNumber)
+  {
+    if (isOccupied(tileNumber))
+    {
+      throw new ArgumentException(ErrorMessages.TILE_OCCUPIED);
+    }
+  }
+
+  private void validateNoAdjacentOppositeColors(int tileNumber, Piece piece)
   {
     HashSet<Piece> adjacentPieces = findOccupiedAdjacents(tileNumber)
       .ConvertAll(adj => getTopPiece(adj)).ToHashSet();
