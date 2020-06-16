@@ -26,6 +26,8 @@ public class Board : ICloneable
 
   public void placePiece(int tileNumber, Piece piece)
   {
+    // // TODO: clean this up
+    // validatePlacement(tileNumber, piece);
     try
     {
       validatePlacement(tileNumber, piece);
@@ -39,6 +41,8 @@ public class Board : ICloneable
 
   public void movePiece(int tileStart, int tileEnd)
   {
+    // // TODO: clean this up
+    // validateMove(tileStart, tileEnd);
     try
     {
       validateMove(tileStart, tileEnd);
@@ -48,6 +52,19 @@ public class Board : ICloneable
     catch (ArgumentException e)
     {
       Console.WriteLine(e.Message);
+    }
+  }
+
+  public void validateTurn(Turn turn)
+  {
+    if (turn.Type == TurnType.Move)
+    {
+      validateMove(turn.TileStart, turn.TileEnd);
+    }
+    else
+    {
+      validatePlacement(
+        turn.PlacementTile, new Piece(turn.PieceType, turn.player.Color));
     }
   }
 
@@ -69,6 +86,14 @@ public class Board : ICloneable
   public object Clone()
   {
     return new Board(this);
+  }
+
+  public void printBoard()
+  {
+    foreach (int tileNumber in PieceMap.Keys)
+    {
+      Console.WriteLine($"{tileNumber}: {getTopPiece(tileNumber)}");
+    }
   }
 
   // Private methods

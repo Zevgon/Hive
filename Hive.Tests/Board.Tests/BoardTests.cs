@@ -40,11 +40,11 @@ namespace Tests
 
       Assert.True(board.isOccupied(0));
       Assert.True(board.isOccupied(1));
-      Assert.Equal(queen, board.getTopPiece(0));
+      Assert.Same(queen, board.getTopPiece(0));
       Assert.True(boardClone.isOccupied(0));
       Assert.True(boardClone.isOccupied(4));
-      // Should be a different queen
-      Assert.NotEqual(queen, boardClone.getTopPiece(0));
+      // Should be a different piece object
+      Assert.NotSame(queen, boardClone.getTopPiece(0));
     }
 
     [Fact]

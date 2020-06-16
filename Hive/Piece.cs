@@ -1,11 +1,17 @@
 using System;
+using System.Runtime.Serialization;
 public enum PieceType
 {
-  Queen,
-  Gh,
+  [EnumMember(Value = "a")]
   Ant,
+  [EnumMember(Value = "b")]
+  Beetle,
+  [EnumMember(Value = "g")]
+  Gh,
+  [EnumMember(Value = "s")]
   Spider,
-  Beetle
+  [EnumMember(Value = "q")]
+  Queen,
 }
 
 public enum Color

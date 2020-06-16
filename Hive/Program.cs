@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-class MainClass
+﻿class MainClass
 {
   public static void Main(string[] args)
   {
-    Console.WriteLine("Yay!");
+    Game game = new Game();
+    game.start();
   }
 }
