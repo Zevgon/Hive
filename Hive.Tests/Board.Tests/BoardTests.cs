@@ -50,7 +50,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testPlacePiece_firstPiece_succeeds()
+    public void testPlacePiece_succeeds()
     {
       Piece piece = newPiece();
       Board board = new Board();
@@ -61,7 +61,30 @@ namespace Tests
     }
 
     [Fact]
-    public void testPlacePiece_nextToOppositeColor_onePiecePlaced_succeeds()
+    public void testPlaceMultiplePieces_succeeds()
+    {
+      Piece piece1 = newPiece();
+      Piece piece2 = newPiece();
+      Board board = new Board();
+
+      board.placePiece(0, piece1);
+      board.placePiece(1, piece2);
+
+      Assert.True(board.isOccupied(0));
+      Assert.True(board.isOccupied(1));
+    }
+
+    [Fact]
+    public void testValidatePlacement_firstPiece_succeeds()
+    {
+      Board board = new Board();
+      Turn turn = newPlacementTurn(0);
+
+      board.validateTurn(turn);
+    }
+
+    [Fact]
+    public void testValidatePlacement_nextToOppositeColor_onePiecePlaced_succeeds()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -69,11 +92,9 @@ namespace Tests
           {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
         }
       );
+      Turn turn = newPlacementTurn(1, Color.Black);
 
-      board.placePiece(1, new Piece(PieceType.Queen, Color.Black));
-
-      Assert.True(board.isOccupied(0));
-      Assert.True(board.isOccupied(1));
+      board.validateTurn(turn);
     }
 
     [Fact]
@@ -85,12 +106,7 @@ namespace Tests
           {0, new List<Piece>(new Piece[] {newPiece()})},
         }
       );
-      // TODO: improve turn creation, maybe use builder pattern?
-      Turn turn = new Turn();
-      turn.Type = TurnType.Placement;
-      turn.PieceType = RandomPieceType();
-      turn.PlacementTile = 0;
-      turn.Player = newPlayer();
+      Turn turn = newPlacementTurn(0);
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
@@ -109,11 +125,7 @@ namespace Tests
           {0, new List<Piece>(new Piece[] {newPiece()})},
         }
       );
-      Turn turn = new Turn();
-      turn.Type = TurnType.Placement;
-      turn.PieceType = PieceType.Beetle;
-      turn.PlacementTile = 0;
-      turn.Player = newPlayer();
+      Turn turn = newPlacementTurn(0, PieceType.Beetle);
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
@@ -133,11 +145,7 @@ namespace Tests
           {1, new List<Piece>(new Piece[] { new Piece(PieceType.Queen, Color.Black)})},
         }
       );
-      Turn turn = new Turn();
-      turn.Type = TurnType.Placement;
-      turn.PieceType = PieceType.Beetle;
-      turn.PlacementTile = 2;
-      turn.Player = newPlayer();
+      Turn turn = newPlacementTurn(2, PieceType.Beetle);
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
@@ -148,7 +156,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_validMove_movesPieceOffOfOriginAndOntoDest()
+    public void testMovePiece_movesPieceOffOfOriginAndOntoDest()
     {
       Piece queen = new Piece(PieceType.Queen, Color.White);
       Piece ant = new Piece(PieceType.Ant, Color.White);
@@ -187,6 +195,43 @@ namespace Tests
     }
 
     [Fact]
+    public void testMovePiece_destOccupied_succeeds()
+    {
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {newPiece(PieceType.Beetle)})},
+          {1, new List<Piece>(new Piece[] {newPiece()})},
+        }
+      );
+
+      board.movePiece(0, 1);
+
+      Assert.Equal(PieceType.Beetle, board.getTopPiece(1).Type);
+      Assert.False(board.isOccupied(0));
+    }
+
+    [Fact]
+    public void testMovePiece_originAndDestOccupied_succeeds()
+    {
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {
+            newPiece(PieceType.Queen),
+            newPiece(PieceType.Beetle),
+          })},
+          {1, new List<Piece>(new Piece[] {newPiece()})},
+        }
+      );
+
+      board.movePiece(0, 1);
+
+      Assert.Equal(PieceType.Beetle, board.getTopPiece(1).Type);
+      Assert.Equal(PieceType.Queen, board.getTopPiece(0).Type);
+    }
+
+    [Fact]
     public void testValidateMove_wouldBreakOneHiveRule_fails_1()
     {
       Board board = new Board(
@@ -197,14 +242,10 @@ namespace Tests
           {4, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
         }
       );
-      Turn turn = newTurn();
-      turn.Type = TurnType.Move;
-      turn.TileStart = 0;
-      turn.TileEnd = 2;
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
-          board.validateTurn(turn);
+          board.validateTurn(newMoveTurn(0, 2));
         });
 
       Assert.Equal($"{ErrorMessages.ONE_HIVE}", e.Message);
@@ -222,14 +263,10 @@ namespace Tests
           {4, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
         }
       );
-      Turn turn = newTurn();
-      turn.Type = TurnType.Move;
-      turn.TileStart = 0;
-      turn.TileEnd = 2;
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
-          board.validateTurn(turn);
+          board.validateTurn(newMoveTurn(0, 2));
         });
 
       Assert.Equal($"{ErrorMessages.ONE_HIVE}", e.Message);
@@ -307,7 +344,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_validBecauseLoopExists_succeeds()
+    public void testValidateMove_validBecauseLoopExists_succeeds()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -321,14 +358,11 @@ namespace Tests
         }
       );
 
-      board.movePiece(1, 7);
-
-      Assert.Equal(PieceType.Ant, board.getTopPiece(7).Type);
-      Assert.False(board.isOccupied(1));
+      board.validateTurn(newMoveTurn(1, 7));
     }
 
     [Fact]
-    public void testMovePiece_ant_accrossManageableGap_succeeds()
+    public void testValidateMove_ant_accrossManageableGap_succeeds()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -349,10 +383,7 @@ namespace Tests
         }
       );
 
-      board.movePiece(16, 9);
-
-      Assert.False(board.isOccupied(16));
-      Assert.True(board.isOccupied(9));
+      board.validateTurn(newMoveTurn(16, 9));
     }
 
     [Fact]
@@ -402,7 +433,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_ant_throughSpaceWithTwoEdges_succeeds()
+    public void testValidateMove_ant_throughSpaceWithTwoEdges_succeeds()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -415,15 +446,25 @@ namespace Tests
         }
       );
 
-      board.movePiece(6, 2);
-
-      Assert.Equal("", consoleOutCatcher.ToString());
-      Assert.False(board.isOccupied(6));
-      Assert.Equal(PieceType.Ant, board.getTopPiece(2).Type);
+      board.validateTurn(newMoveTurn(6, 2));
     }
 
     [Fact]
-    public void testMovePiece_beetle_ontoOccupiedTile_succeeds()
+    public void testValidateMove_beetle_ontoOccupiedTile_succeeds()
+    {
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {newPiece()})},
+          {1, new List<Piece>(new Piece[] {newPiece(PieceType.Beetle)})},
+        }
+      );
+
+      board.validateTurn(newMoveTurn(1, 0));
+    }
+
+    [Fact]
+    public void testValidateMove_beetle_ontoUnoccupiedTile_succeeds()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -433,27 +474,7 @@ namespace Tests
         }
       );
 
-      board.movePiece(1, 0);
-
-      Assert.Equal(PieceType.Beetle, board.getTopPiece(0).Type);
-      Assert.False(board.isOccupied(1));
-    }
-
-    [Fact]
-    public void testMovePiece_beetle_ontoUnoccupiedTile_succeeds()
-    {
-      Board board = new Board(
-        new Dictionary<int, List<Piece>>
-        {
-          {0, new List<Piece>(new Piece[] {newPiece()})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
-        }
-      );
-
-      board.movePiece(1, 2);
-
-      Assert.Equal(PieceType.Beetle, board.getTopPiece(2).Type);
-      Assert.False(board.isOccupied(1));
+      board.validateTurn(newMoveTurn(1, 2));
     }
 
     [Fact]
@@ -498,7 +519,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_beetle_ontoSameColorPiece_succeeds()
+    public void testValidateMove_beetle_ontoSameColorPiece_succeeds()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -508,31 +529,26 @@ namespace Tests
         }
       );
 
-      board.movePiece(1, 0);
-
-      Assert.Equal(PieceType.Beetle, board.getTopPiece(0).Type);
-      Assert.False(board.isOccupied(1));
+      board.validateTurn(newMoveTurn(1, 0));
     }
 
     [Fact]
-    public void testMovePiece_beetle_ontoOppositeColorPiece_succeeds()
+    public void testValidateMove_beetle_ontoOppositeColorPiece_succeeds()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
           {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.Black)})},
+          {2, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
           {1, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
         }
       );
 
-      board.movePiece(1, 0);
-
-      Assert.Equal(PieceType.Beetle, board.getTopPiece(0).Type);
-      Assert.False(board.isOccupied(1));
+      board.validateTurn(newMoveTurn(1, 0));
     }
 
     [Fact]
-    public void testMovePiece_beetle_fromOccupiedTileToEmptyTile_succeeds()
+    public void testValidateMove_beetle_fromOccupiedTileToEmptyTile_succeeds()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -544,14 +560,11 @@ namespace Tests
         }
       );
 
-      board.movePiece(0, 1);
-
-      Assert.Equal(PieceType.Queen, board.getTopPiece(0).Type);
-      Assert.Equal(PieceType.Beetle, board.getTopPiece(1).Type);
+      board.validateTurn(newMoveTurn(0, 1));
     }
 
     [Fact]
-    public void testMovePiece_beetle_fromOccupiedTileToOccupiedTile_succeeds()
+    public void testValidateMove_beetle_fromOccupiedTileToOccupiedTile_succeeds()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -564,10 +577,7 @@ namespace Tests
         }
       );
 
-      board.movePiece(0, 1);
-
-      Assert.Equal(PieceType.Queen, board.getTopPiece(0).Type);
-      Assert.Equal(PieceType.Beetle, board.getTopPiece(1).Type);
+      board.validateTurn(newMoveTurn(0, 1));
     }
 
     [Fact]
@@ -630,7 +640,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_grasshopper_overSameColorPiece_succeeds()
+    public void testValidateMove_grasshopper_overSameColorPiece_succeeds()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -640,27 +650,22 @@ namespace Tests
         }
       );
 
-      board.movePiece(1, 4);
-
-      Assert.Equal(PieceType.Gh, board.getTopPiece(4).Type);
-      Assert.False(board.isOccupied(1));
+      board.validateTurn(newMoveTurn(1, 4));
     }
 
     [Fact]
-    public void testMovePiece_grasshopper_overOppositeColorPiece_succeeds()
+    public void testValidateMove_grasshopper_overOppositeColorPiece_succeeds()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
           {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.Black)})},
+          {2, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
           {1, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
         }
       );
 
-      board.movePiece(1, 4);
-
-      Assert.Equal(PieceType.Gh, board.getTopPiece(4).Type);
-      Assert.False(board.isOccupied(1));
+      board.validateTurn(newMoveTurn(1, 4));
     }
 
     [Fact]
@@ -683,7 +688,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_queen_validMove_succeeds()
+    public void testValidateMove_queen_validMove_succeeds()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -693,10 +698,7 @@ namespace Tests
         }
       );
 
-      board.movePiece(0, 2);
-
-      Assert.False(board.isOccupied(0));
-      Assert.Equal(PieceType.Queen, board.getTopPiece(2).Type);
+      board.validateTurn(newMoveTurn(0, 2));
     }
 
     [Fact]
@@ -738,7 +740,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testPlacementMove_queen_jumpInsteadOfPivot_fails()
+    public void testValidateMove_queen_jumpInsteadOfPivot_fails()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -798,7 +800,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_spider_threeTilesTraveled_succeeds()
+    public void testValidateMove_spider_threeTilesTraveled_succeeds()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -808,10 +810,7 @@ namespace Tests
         }
       );
 
-      board.movePiece(1, 4);
-
-      Assert.False(board.isOccupied(1));
-      Assert.Equal(PieceType.Spider, board.getTopPiece(4).Type);
+      board.validateTurn(newMoveTurn(1, 4));
     }
 
     [Fact]
@@ -885,7 +884,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_spider_tileCanBeReachedWithTwoOrThreeMoves_succeeds_1()
+    public void testValidateMove_spider_tileCanBeReachedWithTwoOrThreeMoves_succeeds_1()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -901,14 +900,11 @@ namespace Tests
         }
       );
 
-      board.movePiece(6, 2);
-
-      Assert.False(board.isOccupied(6));
-      Assert.Equal(PieceType.Spider, board.getTopPiece(2).Type);
+      board.validateTurn(newMoveTurn(6, 2));
     }
 
     [Fact]
-    public void testMovePiece_spider_tileCanBeReachedWithTwoOrThreeMoves_succeeds_2()
+    public void testValidateMove_spider_tileCanBeReachedWithTwoOrThreeMoves_succeeds_2()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -924,14 +920,11 @@ namespace Tests
         }
       );
 
-      board.movePiece(6, 3);
-
-      Assert.False(board.isOccupied(6));
-      Assert.Equal(PieceType.Spider, board.getTopPiece(3).Type);
+      board.validateTurn(newMoveTurn(6, 3));
     }
 
     [Fact]
-    public void testMovePiece_spider_wouldBlockItselfIfNotRemovedBeforeTransit_succeeds()
+    public void testValidateMove_spider_wouldBlockItselfIfNotRemovedBeforeTransit_succeeds()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -946,15 +939,17 @@ namespace Tests
         }
       );
 
-      board.movePiece(6, 14);
-
-      Assert.False(board.isOccupied(6));
-      Assert.Equal(PieceType.Spider, board.getTopPiece(14).Type);
+      board.validateTurn(newMoveTurn(6, 14));
     }
 
     private Piece newPiece()
     {
       return new Piece(RandomPieceType(), RandomColor());
+    }
+
+    private Piece newPiece(PieceType pieceType)
+    {
+      return new Piece(pieceType, RandomColor());
     }
 
     public static string RandomString(int length = 5)
@@ -984,6 +979,11 @@ namespace Tests
       return new Player(RandomString(), RandomColor());
     }
 
+    public static Player newPlayer(Color color)
+    {
+      return new Player(RandomString(), color);
+    }
+
     public static Turn newTurn()
     {
       Turn turn = new Turn();
@@ -994,8 +994,39 @@ namespace Tests
     public static Turn newMoveTurn(int tileStart, int tileEnd)
     {
       Turn turn = new Turn();
+      turn.Type = TurnType.Move;
       turn.TileStart = tileStart;
       turn.TileEnd = tileEnd;
+      turn.Player = newPlayer();
+      return turn;
+    }
+
+    public static Turn newPlacementTurn(int placementTile)
+    {
+      Turn turn = new Turn();
+      turn.PieceType = RandomPieceType();
+      turn.PlacementTile = placementTile;
+      turn.Type = TurnType.Placement;
+      turn.Player = newPlayer();
+      return turn;
+    }
+
+    public static Turn newPlacementTurn(int placementTile, Color color)
+    {
+      Turn turn = new Turn();
+      turn.PieceType = RandomPieceType();
+      turn.PlacementTile = placementTile;
+      turn.Type = TurnType.Placement;
+      turn.Player = newPlayer(color);
+      return turn;
+    }
+
+    public static Turn newPlacementTurn(int placementTile, PieceType pieceType)
+    {
+      Turn turn = new Turn();
+      turn.PieceType = pieceType;
+      turn.PlacementTile = placementTile;
+      turn.Type = TurnType.Placement;
       turn.Player = newPlayer();
       return turn;
     }
