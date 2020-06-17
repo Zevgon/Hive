@@ -21,11 +21,11 @@ public class Player
     PieceCounts =
       new Dictionary<PieceType, int>
       {
-        {PieceType.Ant, NUM_ANTS},
-        {PieceType.Gh, NUM_GHS},
-        {PieceType.Beetle, NUM_BEETLES},
-        {PieceType.Spider, NUM_SPIDERS},
-        {PieceType.Queen, NUM_QUEENS},
+        {PieceType.A, NUM_ANTS},
+        {PieceType.G, NUM_GHS},
+        {PieceType.B, NUM_BEETLES},
+        {PieceType.S, NUM_SPIDERS},
+        {PieceType.Q, NUM_QUEENS},
       };
   }
 

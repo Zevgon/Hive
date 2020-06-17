@@ -29,12 +29,12 @@ namespace Tests
     [Fact]
     public void testBoardClone()
     {
-      Piece queen = new Piece(PieceType.Queen, Color.White);
+      Piece queen = new Piece(PieceType.Q, Color.White);
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
           {0, new List<Piece>(new Piece[] {queen})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
         }
       );
       Board boardClone = (Board)board.Clone();
@@ -90,7 +90,7 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
         }
       );
       Turn turn = newPlacementTurn(1, Color.Black);
@@ -126,7 +126,7 @@ namespace Tests
           {0, new List<Piece>(new Piece[] {newPiece()})},
         }
       );
-      Turn turn = newPlacementTurn(0, PieceType.Beetle);
+      Turn turn = newPlacementTurn(0, PieceType.B);
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
@@ -142,11 +142,11 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {1, new List<Piece>(new Piece[] { new Piece(PieceType.Queen, Color.Black)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {1, new List<Piece>(new Piece[] { new Piece(PieceType.Q, Color.Black)})},
         }
       );
-      Turn turn = newPlacementTurn(2, PieceType.Beetle);
+      Turn turn = newPlacementTurn(2, PieceType.B);
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
@@ -159,8 +159,8 @@ namespace Tests
     [Fact]
     public void testMovePiece_movesPieceOffOfOriginAndOntoDest()
     {
-      Piece queen = new Piece(PieceType.Queen, Color.White);
-      Piece ant = new Piece(PieceType.Ant, Color.White);
+      Piece queen = new Piece(PieceType.Q, Color.White);
+      Piece ant = new Piece(PieceType.A, Color.White);
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
@@ -183,16 +183,16 @@ namespace Tests
         new Dictionary<int, List<Piece>>
         {
           {1, new List<Piece>(new Piece[] {
-            new Piece(PieceType.Queen, Color.White),
-            new Piece(PieceType.Beetle, Color.White)
+            new Piece(PieceType.Q, Color.White),
+            new Piece(PieceType.B, Color.White)
           })},
         }
       );
 
       board.movePiece(1, 2);
 
-      Assert.Equal(PieceType.Queen, board.getTopPiece(1).Type);
-      Assert.Equal(PieceType.Beetle, board.getTopPiece(2).Type);
+      Assert.Equal(PieceType.Q, board.getTopPiece(1).Type);
+      Assert.Equal(PieceType.B, board.getTopPiece(2).Type);
     }
 
     [Fact]
@@ -201,14 +201,14 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {newPiece(PieceType.Beetle)})},
+          {0, new List<Piece>(new Piece[] {newPiece(PieceType.B)})},
           {1, new List<Piece>(new Piece[] {newPiece()})},
         }
       );
 
       board.movePiece(0, 1);
 
-      Assert.Equal(PieceType.Beetle, board.getTopPiece(1).Type);
+      Assert.Equal(PieceType.B, board.getTopPiece(1).Type);
       Assert.False(board.isOccupied(0));
     }
 
@@ -219,8 +219,8 @@ namespace Tests
         new Dictionary<int, List<Piece>>
         {
           {0, new List<Piece>(new Piece[] {
-            newPiece(PieceType.Queen),
-            newPiece(PieceType.Beetle),
+            newPiece(PieceType.Q),
+            newPiece(PieceType.B),
           })},
           {1, new List<Piece>(new Piece[] {newPiece()})},
         }
@@ -228,8 +228,8 @@ namespace Tests
 
       board.movePiece(0, 1);
 
-      Assert.Equal(PieceType.Beetle, board.getTopPiece(1).Type);
-      Assert.Equal(PieceType.Queen, board.getTopPiece(0).Type);
+      Assert.Equal(PieceType.B, board.getTopPiece(1).Type);
+      Assert.Equal(PieceType.Q, board.getTopPiece(0).Type);
     }
 
     [Fact]
@@ -238,9 +238,9 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {4, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {4, new List<Piece>(new Piece[] {new Piece(PieceType.B, Color.White)})},
         }
       );
 
@@ -258,10 +258,10 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.Black)})},
-          {3, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {4, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.Black)})},
+          {3, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {4, new List<Piece>(new Piece[] {new Piece(PieceType.B, Color.White)})},
         }
       );
 
@@ -283,11 +283,11 @@ namespace Tests
           {0, new List<Piece>(new Piece[] { newPiece() })},
           {1, new List<Piece>(new Piece[] {
             newPiece(),
-            new Piece(PieceType.Beetle, Color.White)})
+            new Piece(PieceType.B, Color.White)})
           },
           {4, new List<Piece>(new Piece[] {
             newPiece(),
-            new Piece(PieceType.Beetle, Color.White)})
+            new Piece(PieceType.B, Color.White)})
           },
         }
       );
@@ -306,14 +306,14 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.Black)})},
-          {3, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {7, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.Black)})},
-          {4, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
-          {8, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.Black)})},
-          {5, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {20, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.Black)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.Black)})},
+          {3, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {7, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.Black)})},
+          {4, new List<Piece>(new Piece[] {new Piece(PieceType.B, Color.White)})},
+          {8, new List<Piece>(new Piece[] {new Piece(PieceType.B, Color.Black)})},
+          {5, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {20, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.Black)})},
         }
       );
 
@@ -331,8 +331,8 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
         }
       );
 
@@ -350,12 +350,12 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {8, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
-          {9, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {10, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
-          {3, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {8, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.White)})},
+          {9, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {10, new List<Piece>(new Piece[] {new Piece(PieceType.B, Color.White)})},
+          {3, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.White)})},
         }
       );
 
@@ -369,18 +369,18 @@ namespace Tests
         new Dictionary<int, List<Piece>>
         {
           // White pieces
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {6, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {18, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {5, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
-          {14, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
-          {16, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {6, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {18, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {5, new List<Piece>(new Piece[] {new Piece(PieceType.B, Color.White)})},
+          {14, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.White)})},
+          {16, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
           // Black pieces
-          {8, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.Black)})},
-          {2, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.Black)})},
-          {10, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.Black)})},
-          {11, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.Black)})},
-          {12, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.Black)})},
+          {8, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.Black)})},
+          {2, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.Black)})},
+          {10, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.Black)})},
+          {11, new List<Piece>(new Piece[] {new Piece(PieceType.B, Color.Black)})},
+          {12, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.Black)})},
         }
       );
 
@@ -393,12 +393,12 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.Black)})},
-          {3, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {8, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.Black)})},
-          {10, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
-          {6, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.Black)})},
+          {3, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {8, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.Black)})},
+          {10, new List<Piece>(new Piece[] {new Piece(PieceType.B, Color.White)})},
+          {6, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
         }
       );
 
@@ -416,12 +416,12 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {8, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
-          {3, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
-          {9, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {10, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
+          {8, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.B, Color.White)})},
+          {3, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.White)})},
+          {9, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {10, new List<Piece>(new Piece[] {new Piece(PieceType.B, Color.White)})},
         }
       );
 
@@ -439,11 +439,11 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
-          {3, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
-          {10, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {6, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.B, Color.White)})},
+          {3, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.White)})},
+          {10, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {6, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
         }
       );
 
@@ -457,7 +457,7 @@ namespace Tests
         new Dictionary<int, List<Piece>>
         {
           {0, new List<Piece>(new Piece[] {newPiece()})},
-          {1, new List<Piece>(new Piece[] {newPiece(PieceType.Beetle)})},
+          {1, new List<Piece>(new Piece[] {newPiece(PieceType.B)})},
         }
       );
 
@@ -471,7 +471,7 @@ namespace Tests
         new Dictionary<int, List<Piece>>
         {
           {0, new List<Piece>(new Piece[] {newPiece()})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.B, Color.White)})},
         }
       );
 
@@ -485,7 +485,7 @@ namespace Tests
         new Dictionary<int, List<Piece>>
         {
           {0, new List<Piece>(new Piece[] {newPiece()})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.B, Color.White)})},
         }
       );
 
@@ -503,11 +503,11 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {3, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
-          {10, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {8, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {3, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.White)})},
+          {10, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {8, new List<Piece>(new Piece[] {new Piece(PieceType.B, Color.White)})},
         }
       );
 
@@ -525,8 +525,8 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.B, Color.White)})},
         }
       );
 
@@ -539,9 +539,9 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.Black)})},
-          {2, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.Black)})},
+          {2, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.B, Color.White)})},
         }
       );
 
@@ -555,8 +555,8 @@ namespace Tests
         new Dictionary<int, List<Piece>>
         {
           {0, new List<Piece>(new Piece[] {
-            new Piece(PieceType.Queen, Color.White),
-            new Piece(PieceType.Beetle, Color.White)
+            new Piece(PieceType.Q, Color.White),
+            new Piece(PieceType.B, Color.White)
           })},
         }
       );
@@ -571,10 +571,10 @@ namespace Tests
         new Dictionary<int, List<Piece>>
         {
           {0, new List<Piece>(new Piece[] {
-            new Piece(PieceType.Queen, Color.White),
-            new Piece(PieceType.Beetle, Color.White)
+            new Piece(PieceType.Q, Color.White),
+            new Piece(PieceType.B, Color.White)
           })},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
         }
       );
 
@@ -587,9 +587,9 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {3, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {3, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
         }
       );
 
@@ -607,8 +607,8 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
         }
       );
 
@@ -626,9 +626,9 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {4, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {4, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
         }
       );
 
@@ -646,8 +646,8 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
         }
       );
 
@@ -660,9 +660,9 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.Black)})},
-          {2, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.Black)})},
+          {2, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
         }
       );
 
@@ -675,8 +675,8 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
         }
       );
 
@@ -694,8 +694,8 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.Black)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.Black)})},
         }
       );
 
@@ -708,8 +708,8 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.Black)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.Black)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
         }
       );
 
@@ -727,8 +727,8 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.Black)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.Black)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
         }
       );
 
@@ -746,11 +746,11 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {3, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
-          {10, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
-          {8, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {3, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.White)})},
+          {10, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.B, Color.White)})},
+          {8, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
         }
       );
 
@@ -768,8 +768,8 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.White)})},
         }
       );
 
@@ -787,8 +787,8 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.White)})},
         }
       );
 
@@ -806,8 +806,8 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.White)})},
         }
       );
 
@@ -820,9 +820,9 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {4, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {4, new List<Piece>(new Piece[] {new Piece(PieceType.B, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.White)})},
         }
       );
 
@@ -840,14 +840,14 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {8, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {9, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {10, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {11, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {12, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {4, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {8, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {9, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {10, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {11, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {12, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {4, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.White)})},
         }
       );
 
@@ -865,14 +865,14 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {8, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {9, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {10, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {11, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {12, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {4, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {8, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {9, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {10, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {11, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {12, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {4, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.White)})},
         }
       );
 
@@ -890,14 +890,14 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {8, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {9, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {10, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {11, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {12, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {4, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {6, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {8, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {9, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {10, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {11, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {12, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {4, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {6, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.White)})},
         }
       );
 
@@ -910,14 +910,14 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {8, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {9, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {10, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {11, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {12, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {4, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {6, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {8, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {9, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {10, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {11, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {12, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {4, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {6, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.White)})},
         }
       );
 
@@ -930,13 +930,13 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-          {8, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {2, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {3, new List<Piece>(new Piece[] {new Piece(PieceType.Ant, Color.White)})},
-          {12, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {4, new List<Piece>(new Piece[] {new Piece(PieceType.Gh, Color.White)})},
-          {6, new List<Piece>(new Piece[] {new Piece(PieceType.Spider, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {8, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {2, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {3, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {12, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {4, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {6, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.White)})},
         }
       );
 

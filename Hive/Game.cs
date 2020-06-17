@@ -106,7 +106,7 @@ public class Game
   private string promptTurn(Player player)
   {
     Console.WriteLine(
-        $"{player}'s turn. Enter turn (examples: 'Queen:0', 'Ant:6', '7:19', '0:5')");
+        $"{player}'s turn. Enter turn (examples: 'Q:0', 'A:6', '7:19', '0:5')");
     Console.Write(">>> ");
     return Console.ReadLine();
   }

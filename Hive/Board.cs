@@ -338,19 +338,19 @@ public class Board : ICloneable
     Piece piece = getTopPiece(tileStart);
     switch (piece.Type)
     {
-      case PieceType.Ant:
+      case PieceType.A:
         validateAntCanReach(tileStart, tileEnd);
         return;
-      case PieceType.Beetle:
+      case PieceType.B:
         validateBeetleCanReach(tileStart, tileEnd);
         return;
-      case PieceType.Gh:
+      case PieceType.G:
         validateGhCanReach(tileStart, tileEnd);
         return;
-      case PieceType.Queen:
+      case PieceType.Q:
         validateQueenCanReach(tileStart, tileEnd);
         return;
-      case PieceType.Spider:
+      case PieceType.S:
         validateSpiderCanReach(tileStart, tileEnd);
         return;
       default:
@@ -361,7 +361,7 @@ public class Board : ICloneable
   private void validatePieceStacking(int tileStart, int tileEnd)
   {
     Piece piece = getTopPiece(tileStart);
-    if (isOccupied(tileEnd) && piece.Type != PieceType.Beetle)
+    if (isOccupied(tileEnd) && piece.Type != PieceType.B)
     {
       throw new ArgumentException(ErrorMessages.PIECE_STACKING);
     }
