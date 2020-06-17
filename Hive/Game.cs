@@ -92,8 +92,7 @@ public class Game
         }
         catch (ArgumentException e)
         {
-          Console.Write(e.Message);
-          Console.WriteLine(" Please try again:");
+          Console.WriteLine($"{e.Message} Please try again");
           continue;
         }
       }

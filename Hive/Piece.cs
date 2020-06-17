@@ -1,16 +1,17 @@
 using System;
+using System.ComponentModel;
 using System.Runtime.Serialization;
 public enum PieceType
 {
-  [EnumMember(Value = "Ant")]
+  [Description("Ant")]
   A,
-  [EnumMember(Value = "Beetle")]
+  [Description("Beetle")]
   B,
-  [EnumMember(Value = "Grasshopper")]
+  [Description("Grasshopper")]
   G,
-  [EnumMember(Value = "Spider")]
+  [Description("Spider")]
   S,
-  [EnumMember(Value = "Queen")]
+  [Description("Queen")]
   Q,
 }
 
