@@ -52,13 +52,11 @@ public class Board : ICloneable
   {
     if (turn.Type == TurnType.Move)
     {
-      validateIsAllowedToMove(turn.Player.Color);
-      validateMove(turn.TileStart, turn.TileEnd);
+      validateMove(turn);
     }
     else
     {
-      validatePlacement(
-        turn.PlacementTile, new Piece(turn.PieceType, turn.Player.Color));
+      validatePlacement(turn);
     }
   }
 
@@ -148,7 +146,7 @@ public class Board : ICloneable
 
   // Validations
 
-  private void validateIsAllowedToMove(Color playerColor)
+  private void validateCanMoveThisTurn(Color playerColor)
   {
     if (!CanMoveMap[playerColor])
     {
@@ -157,18 +155,37 @@ public class Board : ICloneable
     }
   }
 
-
-  private void validateMove(int tileStart, int tileEnd)
+  private void validateIsMovingOwnPiece(Turn turn)
   {
-    validateOneHive(tileStart, tileEnd);
-    validatePieceStacking(tileStart, tileEnd);
-    validatePieceCanReach(tileStart, tileEnd);
+    if (getTopPiece(turn.TileStart).Color != turn.Player.Color)
+    {
+      throw new ArgumentException(
+        ErrorMessages.CANNOT_MOVE_OPPONENT_PIECE);
+    }
   }
 
-  private void validatePlacement(int tileNumber, Piece piece)
+  private void validateTileStartOccupied(int tileStart)
   {
-    validateUnoccupied(tileNumber);
-    validateNoAdjacentOppositeColors(tileNumber, piece);
+    if (!isOccupied(tileStart))
+    {
+      throw new ArgumentException(ErrorMessages.TILE_START_MUST_BE_OCCUPIED);
+    }
+  }
+
+  private void validateMove(Turn turn)
+  {
+    validateTileStartOccupied(turn.TileStart);
+    validateCanMoveThisTurn(turn.Player.Color);
+    validateIsMovingOwnPiece(turn);
+    validateOneHive(turn.TileStart, turn.TileEnd);
+    validatePieceStacking(turn.TileStart, turn.TileEnd);
+    validatePieceCanReach(turn.TileStart, turn.TileEnd);
+  }
+
+  private void validatePlacement(Turn turn)
+  {
+    validateUnoccupied(turn.PlacementTile);
+    validateNoAdjacentOppositeColors(turn.PlacementTile, turn.Player.Color);
   }
 
   // Validation helper methods
@@ -349,12 +366,12 @@ public class Board : ICloneable
     }
   }
 
-  private void validateNoAdjacentOppositeColors(int tileNumber, Piece piece)
+  private void validateNoAdjacentOppositeColors(int tileNumber, Color color)
   {
     HashSet<Piece> adjacentPieces = findOccupiedAdjacents(tileNumber)
       .ConvertAll(adj => getTopPiece(adj)).ToHashSet();
     if (PieceMap.Count > 1 &&
-        adjacentPieces.Any(adjPiece => adjPiece.Color != piece.Color))
+        adjacentPieces.Any(adjPiece => adjPiece.Color != color))
     {
       throw new ArgumentException(ErrorMessages.PLACEMENT_ADJACENCY);
     }

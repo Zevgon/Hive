@@ -280,7 +280,9 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] { newPiece() })},
+          {0, new List<Piece>(new Piece[] {
+            new Piece(PieceType.G, Color.White)
+           })},
           {1, new List<Piece>(new Piece[] {
             new Piece(PieceType.Q, Color.White),
             new Piece(PieceType.B, Color.White)
@@ -941,6 +943,64 @@ namespace Tests
       );
 
       board.validateTurn(newMoveTurn(6, 14, Color.White));
+    }
+
+    [Fact]
+    public void testValidateMove_playerTriesToMoveOpponentPiece_fails()
+    {
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.Black)})},
+        }
+      );
+
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(newMoveTurn(1, 2, Color.White));
+        });
+
+      Assert.Equal($"{ErrorMessages.CANNOT_MOVE_OPPONENT_PIECE}", e.Message);
+    }
+
+    [Fact]
+    public void testValidateMove_tileStartUnoccupied_fails()
+    {
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.Black)})},
+        }
+      );
+
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(newMoveTurn(2, 3, Color.White));
+        });
+
+      Assert.Equal($"{ErrorMessages.TILE_START_MUST_BE_OCCUPIED}", e.Message);
+    }
+
+    [Fact]
+    public void testValidateMove_queenNotPlaced_fails()
+    {
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.Black)})},
+        }
+      );
+
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(newMoveTurn(0, 2, Color.White));
+        });
+
+      Assert.Equal(
+        $"{ErrorMessages.MUST_PLACE_QUEEN_BEFORE_MOVING}", e.Message);
     }
 
     private Piece newPiece()

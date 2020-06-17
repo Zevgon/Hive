@@ -114,7 +114,6 @@ public class Game
   private void validateTurn(Turn turn)
   {
     // TODO:
-    // Validate whether move or place is allowed
     // Validate that the player is moving their own piece
     board.validateTurn(turn);
     turn.Player.validateHasPiece(turn.PieceType);
