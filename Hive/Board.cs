@@ -199,6 +199,7 @@ public class Board : ICloneable
 
   private void validatePlacement(Turn turn)
   {
+    validateOneHive(turn.PlacementTile);
     validateUnoccupied(turn.PlacementTile);
     validateNoAdjacentOppositeColors(turn.PlacementTile, turn.Player.Color);
   }
@@ -392,6 +393,16 @@ public class Board : ICloneable
     }
   }
 
+  // Validates one hive rule during placement turns
+  private void validateOneHive(int placementTile)
+  {
+    Board boardClone = (Board)this.Clone();
+    // Piece type/color doesn't matter here so use arbitrary ones
+    boardClone.addPiece(placementTile, new Piece(PieceType.A, Color.White));
+    boardClone.checkMultipleIslands();
+  }
+
+  // Validates one hive rule during move turns
   private void validateOneHive(int tileStart, int tileEnd)
   {
     Board boardClone = (Board)this.Clone();

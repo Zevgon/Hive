@@ -157,6 +157,25 @@ namespace Tests
     }
 
     [Fact]
+    public void testValidatePlacement_wouldBreakOneHiveRule_fails()
+    {
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+        }
+      );
+      Turn turn = newPlacementTurn(16, PieceType.B);
+
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(turn);
+        });
+
+      Assert.Equal($"{ErrorMessages.ONE_HIVE}", e.Message);
+    }
+
+    [Fact]
     public void testMovePiece_movesPieceOffOfOriginAndOntoDest()
     {
       Piece queen = new Piece(PieceType.Q, Color.White);
