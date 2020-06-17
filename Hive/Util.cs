@@ -37,6 +37,7 @@ public class Util
     return findAdjacents(tile2)[tile1Adjes.IndexOf(tile2)];
   }
 
+  // TODO: make generic??
   public static Dictionary<int, List<Piece>> cloneDictionary(
     Dictionary<int, List<Piece>> original)
   {
@@ -45,6 +46,18 @@ public class Util
     foreach (KeyValuePair<int, List<Piece>> entry in original)
     {
       ret.Add(entry.Key, cloneList(entry.Value));
+    }
+    return ret;
+  }
+
+  public static Dictionary<Color, bool> cloneDictionary(
+    Dictionary<Color, bool> original)
+  {
+    Dictionary<Color, bool> ret = new Dictionary<Color, bool>(
+      original.Count, original.Comparer);
+    foreach (KeyValuePair<Color, bool> entry in original)
+    {
+      ret.Add(entry.Key, entry.Value);
     }
     return ret;
   }

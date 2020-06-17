@@ -6,7 +6,12 @@ using static Util;
 public class Board : ICloneable
 {
   // Maps from piece position to the pieces on that position
+  // TODO: remove the get?
   private Dictionary<int, List<Piece>> PieceMap { get; }
+  private Dictionary<Color, bool> CanMoveMap = new Dictionary<Color, bool> {
+    { Color.Black, false },
+    { Color.White, false }
+  };
   private int SPIDER_DISTANCE = 3;
 
   public Board()
@@ -17,17 +22,23 @@ public class Board : ICloneable
   public Board(Dictionary<int, List<Piece>> pieceMap)
   {
     PieceMap = pieceMap;
+    setCanMoveValues();
   }
 
   protected Board(Board other)
   {
     PieceMap = Util.cloneDictionary(other.PieceMap);
+    CanMoveMap = Util.cloneDictionary(other.CanMoveMap);
   }
 
   // Call validatePlacement before this to ensure no messed up board
   public void placePiece(int tileNumber, Piece piece)
   {
     PieceMap[tileNumber] = new List<Piece>(new Piece[] { piece });
+    if (piece.Type == PieceType.Q)
+    {
+      CanMoveMap[piece.Color] = true;
+    }
   }
 
   // Call validateMove before this to ensure no messed up board
@@ -41,6 +52,7 @@ public class Board : ICloneable
   {
     if (turn.Type == TurnType.Move)
     {
+      validateIsAllowedToMove(turn.Player.Color);
       validateMove(turn.TileStart, turn.TileEnd);
     }
     else
@@ -79,6 +91,20 @@ public class Board : ICloneable
   }
 
   // Private methods
+
+  private void setCanMoveValues()
+  {
+    foreach (List<Piece> pieces in PieceMap.Values)
+    {
+      foreach (Piece piece in pieces)
+      {
+        if (piece.Type == PieceType.Q)
+        {
+          CanMoveMap[piece.Color] = true;
+        }
+      }
+    }
+  }
 
   // Direct board interactions
 
@@ -121,6 +147,16 @@ public class Board : ICloneable
   }
 
   // Validations
+
+  private void validateIsAllowedToMove(Color playerColor)
+  {
+    if (!CanMoveMap[playerColor])
+    {
+      throw new ArgumentException(
+        ErrorMessages.MUST_PLACE_QUEEN_BEFORE_MOVING);
+    }
+  }
+
 
   private void validateMove(int tileStart, int tileEnd)
   {

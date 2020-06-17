@@ -246,7 +246,7 @@ namespace Tests
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
-          board.validateTurn(newMoveTurn(0, 2));
+          board.validateTurn(newMoveTurn(0, 2, Color.White));
         });
 
       Assert.Equal($"{ErrorMessages.ONE_HIVE}", e.Message);
@@ -267,7 +267,7 @@ namespace Tests
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
-          board.validateTurn(newMoveTurn(0, 2));
+          board.validateTurn(newMoveTurn(0, 2, Color.White));
         });
 
       Assert.Equal($"{ErrorMessages.ONE_HIVE}", e.Message);
@@ -282,19 +282,19 @@ namespace Tests
         {
           {0, new List<Piece>(new Piece[] { newPiece() })},
           {1, new List<Piece>(new Piece[] {
-            newPiece(),
-            new Piece(PieceType.B, Color.White)})
-          },
+            new Piece(PieceType.Q, Color.White),
+            new Piece(PieceType.B, Color.White)
+          })},
           {4, new List<Piece>(new Piece[] {
             newPiece(),
-            new Piece(PieceType.B, Color.White)})
-          },
+            new Piece(PieceType.B, Color.White)
+          })},
         }
       );
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
-          board.validateTurn(newMoveTurn(0, 2));
+          board.validateTurn(newMoveTurn(0, 2, Color.White));
         });
 
       Assert.Equal($"{ErrorMessages.ONE_HIVE}", e.Message);
@@ -319,7 +319,7 @@ namespace Tests
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
-          board.validateTurn(newMoveTurn(0, 2));
+          board.validateTurn(newMoveTurn(0, 2, Color.White));
         });
 
       Assert.Equal($"{ErrorMessages.ONE_HIVE}", e.Message);
@@ -338,7 +338,7 @@ namespace Tests
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
-          board.validateTurn(newMoveTurn(1, 7));
+          board.validateTurn(newMoveTurn(1, 7, Color.White));
         });
 
       Assert.Equal($"{ErrorMessages.ONE_HIVE}", e.Message);
@@ -359,7 +359,7 @@ namespace Tests
         }
       );
 
-      board.validateTurn(newMoveTurn(1, 7));
+      board.validateTurn(newMoveTurn(1, 7, Color.White));
     }
 
     [Fact]
@@ -384,7 +384,7 @@ namespace Tests
         }
       );
 
-      board.validateTurn(newMoveTurn(16, 9));
+      board.validateTurn(newMoveTurn(16, 9, Color.White));
     }
 
     [Fact]
@@ -404,7 +404,7 @@ namespace Tests
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
-          board.validateTurn(newMoveTurn(6, 2));
+          board.validateTurn(newMoveTurn(6, 2, Color.White));
         });
 
       Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
@@ -427,7 +427,7 @@ namespace Tests
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
-          board.validateTurn(newMoveTurn(8, 2));
+          board.validateTurn(newMoveTurn(8, 2, Color.White));
         });
 
       Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
@@ -447,7 +447,7 @@ namespace Tests
         }
       );
 
-      board.validateTurn(newMoveTurn(6, 2));
+      board.validateTurn(newMoveTurn(6, 2, Color.White));
     }
 
     [Fact]
@@ -456,12 +456,12 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {newPiece()})},
-          {1, new List<Piece>(new Piece[] {newPiece(PieceType.B)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.B, Color.White)})},
         }
       );
 
-      board.validateTurn(newMoveTurn(1, 0));
+      board.validateTurn(newMoveTurn(1, 0, Color.White));
     }
 
     [Fact]
@@ -470,12 +470,12 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {newPiece()})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
           {1, new List<Piece>(new Piece[] {new Piece(PieceType.B, Color.White)})},
         }
       );
 
-      board.validateTurn(newMoveTurn(1, 2));
+      board.validateTurn(newMoveTurn(1, 2, Color.White));
     }
 
     [Fact]
@@ -484,14 +484,14 @@ namespace Tests
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {newPiece()})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
           {1, new List<Piece>(new Piece[] {new Piece(PieceType.B, Color.White)})},
         }
       );
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
-          board.validateTurn(newMoveTurn(1, 3));
+          board.validateTurn(newMoveTurn(1, 3, Color.White));
         });
 
       Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
@@ -513,7 +513,7 @@ namespace Tests
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
-          board.validateTurn(newMoveTurn(8, 9));
+          board.validateTurn(newMoveTurn(8, 9, Color.White));
         });
 
       Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
@@ -530,7 +530,7 @@ namespace Tests
         }
       );
 
-      board.validateTurn(newMoveTurn(1, 0));
+      board.validateTurn(newMoveTurn(1, 0, Color.White));
     }
 
     [Fact]
@@ -545,7 +545,7 @@ namespace Tests
         }
       );
 
-      board.validateTurn(newMoveTurn(1, 0));
+      board.validateTurn(newMoveTurn(1, 0, Color.White));
     }
 
     [Fact]
@@ -561,7 +561,7 @@ namespace Tests
         }
       );
 
-      board.validateTurn(newMoveTurn(0, 1));
+      board.validateTurn(newMoveTurn(0, 1, Color.White));
     }
 
     [Fact]
@@ -578,7 +578,7 @@ namespace Tests
         }
       );
 
-      board.validateTurn(newMoveTurn(0, 1));
+      board.validateTurn(newMoveTurn(0, 1, Color.White));
     }
 
     [Fact]
@@ -595,7 +595,7 @@ namespace Tests
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
-          board.validateTurn(newMoveTurn(1, 10));
+          board.validateTurn(newMoveTurn(1, 10, Color.White));
         });
 
       Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
@@ -614,7 +614,7 @@ namespace Tests
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
-          board.validateTurn(newMoveTurn(1, 2));
+          board.validateTurn(newMoveTurn(1, 2, Color.White));
         });
 
       Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
@@ -634,7 +634,7 @@ namespace Tests
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
-          board.validateTurn(newMoveTurn(1, 4));
+          board.validateTurn(newMoveTurn(1, 4, Color.White));
         });
 
       Assert.Equal($"{ErrorMessages.PIECE_STACKING}", e.Message);
@@ -651,7 +651,7 @@ namespace Tests
         }
       );
 
-      board.validateTurn(newMoveTurn(1, 4));
+      board.validateTurn(newMoveTurn(1, 4, Color.White));
     }
 
     [Fact]
@@ -666,7 +666,7 @@ namespace Tests
         }
       );
 
-      board.validateTurn(newMoveTurn(1, 4));
+      board.validateTurn(newMoveTurn(1, 4, Color.White));
     }
 
     [Fact]
@@ -682,7 +682,7 @@ namespace Tests
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
-          board.validateTurn(newMoveTurn(1, 3));
+          board.validateTurn(newMoveTurn(1, 3, Color.White));
         });
 
       Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
@@ -699,7 +699,7 @@ namespace Tests
         }
       );
 
-      board.validateTurn(newMoveTurn(0, 2));
+      board.validateTurn(newMoveTurn(0, 2, Color.White));
     }
 
     [Fact]
@@ -715,7 +715,7 @@ namespace Tests
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
-          board.validateTurn(newMoveTurn(1, 0));
+          board.validateTurn(newMoveTurn(1, 0, Color.White));
         });
 
       Assert.Equal($"{ErrorMessages.PIECE_STACKING}", e.Message);
@@ -734,7 +734,7 @@ namespace Tests
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
-          board.validateTurn(newMoveTurn(1, 3));
+          board.validateTurn(newMoveTurn(1, 3, Color.White));
         });
 
       Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
@@ -756,7 +756,7 @@ namespace Tests
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
-          board.validateTurn(newMoveTurn(8, 9));
+          board.validateTurn(newMoveTurn(8, 9, Color.White));
         });
 
       Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
@@ -775,7 +775,7 @@ namespace Tests
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
-          board.validateTurn(newMoveTurn(1, 2));
+          board.validateTurn(newMoveTurn(1, 2, Color.White));
         });
 
       Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
@@ -794,7 +794,7 @@ namespace Tests
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
-          board.validateTurn(newMoveTurn(1, 3));
+          board.validateTurn(newMoveTurn(1, 3, Color.White));
         });
 
       Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
@@ -811,7 +811,7 @@ namespace Tests
         }
       );
 
-      board.validateTurn(newMoveTurn(1, 4));
+      board.validateTurn(newMoveTurn(1, 4, Color.White));
     }
 
     [Fact]
@@ -828,7 +828,7 @@ namespace Tests
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
-          board.validateTurn(newMoveTurn(1, 13));
+          board.validateTurn(newMoveTurn(1, 13, Color.White));
         });
 
       Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
@@ -853,7 +853,7 @@ namespace Tests
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
-          board.validateTurn(newMoveTurn(0, 2));
+          board.validateTurn(newMoveTurn(0, 2, Color.White));
         });
 
       Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
@@ -878,7 +878,7 @@ namespace Tests
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
-          board.validateTurn(newMoveTurn(0, 3));
+          board.validateTurn(newMoveTurn(0, 3, Color.White));
         });
 
       Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
@@ -901,7 +901,7 @@ namespace Tests
         }
       );
 
-      board.validateTurn(newMoveTurn(6, 2));
+      board.validateTurn(newMoveTurn(6, 2, Color.White));
     }
 
     [Fact]
@@ -921,7 +921,7 @@ namespace Tests
         }
       );
 
-      board.validateTurn(newMoveTurn(6, 3));
+      board.validateTurn(newMoveTurn(6, 3, Color.White));
     }
 
     [Fact]
@@ -940,7 +940,7 @@ namespace Tests
         }
       );
 
-      board.validateTurn(newMoveTurn(6, 14));
+      board.validateTurn(newMoveTurn(6, 14, Color.White));
     }
 
     private Piece newPiece()
@@ -992,13 +992,13 @@ namespace Tests
       return turn;
     }
 
-    public static Turn newMoveTurn(int tileStart, int tileEnd)
+    public static Turn newMoveTurn(int tileStart, int tileEnd, Color color)
     {
       Turn turn = new Turn();
       turn.Type = TurnType.Move;
       turn.TileStart = tileStart;
       turn.TileEnd = tileEnd;
-      turn.Player = newPlayer();
+      turn.Player = newPlayer(color);
       return turn;
     }
 
