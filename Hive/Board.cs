@@ -24,19 +24,10 @@ public class Board : ICloneable
     PieceMap = Util.cloneDictionary(other.PieceMap);
   }
 
+  // Call validatePlacement before this to ensure no errors
   public void placePiece(int tileNumber, Piece piece)
   {
-    // // TODO: clean this up
-    // validatePlacement(tileNumber, piece);
-    try
-    {
-      validatePlacement(tileNumber, piece);
-      PieceMap[tileNumber] = new List<Piece>(new Piece[] { piece });
-    }
-    catch (ArgumentException e)
-    {
-      Console.WriteLine(e.Message);
-    }
+    PieceMap[tileNumber] = new List<Piece>(new Piece[] { piece });
   }
 
   public void movePiece(int tileStart, int tileEnd)
@@ -45,7 +36,7 @@ public class Board : ICloneable
     // validateMove(tileStart, tileEnd);
     try
     {
-      validateMove(tileStart, tileEnd);
+      // validateMove(tileStart, tileEnd);
       Piece piece = removePiece(tileStart);
       addPiece(tileEnd, piece);
     }
@@ -64,7 +55,7 @@ public class Board : ICloneable
     else
     {
       validatePlacement(
-        turn.PlacementTile, new Piece(turn.PieceType, turn.player.Color));
+        turn.PlacementTile, new Piece(turn.PieceType, turn.Player.Color));
     }
   }
 

@@ -2,6 +2,8 @@ using System;
 using System.Runtime.Serialization;
 public enum PieceType
 {
+  // TODO: change these "Value = " to human-readable values, and change the
+  // actual enum values to single letters
   [EnumMember(Value = "a")]
   Ant,
   [EnumMember(Value = "b")]

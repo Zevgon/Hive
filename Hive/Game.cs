@@ -15,15 +15,14 @@ public class Turn
   public PieceType PieceType;
   // Will be null if piece type is Move
   public int PlacementTile;
-  // Does not get set during deserialization
-  public Player player;
+  public Player Player;
   // Will be null if piece type is Placement
   public int TileStart;
   // Will be null if piece type is Placement
   public int TileEnd;
   private static string DeserializationPattern = @"^(\d+|\w+):(\d+)$";
 
-  public static Turn deserialize(string turnStr)
+  public static Turn createTurn(Player player, string turnStr)
   {
     System.Text.RegularExpressions.Match regexMatch =
       Regex.Match(turnStr, DeserializationPattern);
@@ -33,8 +32,9 @@ public class Turn
         $"Invalid turn input. Input must match {DeserializationPattern}");
     }
     Turn turn = new Turn();
-    turn.Type =
-      Regex.Match(turnStr, @"\w").Success ? TurnType.Placement : TurnType.Move;
+    turn.Type = Regex.Match(turnStr, @"[A-Za-z]").Success ?
+      TurnType.Placement :
+      TurnType.Move;
     if (turn.Type == TurnType.Move)
     {
       turn.TileStart = Int32.Parse(regexMatch.Groups[1].Value);
@@ -46,6 +46,7 @@ public class Turn
       turn.PlacementTile = turn.TileEnd =
         Int32.Parse(regexMatch.Groups[2].Value);
     }
+    turn.Player = player;
     return turn;
   }
 }
@@ -76,8 +77,8 @@ public class Game
         try
         {
           string turnStr = promptTurn(currentPlayer);
-          Turn turn = Turn.deserialize(turnStr);
-          turn.player = currentPlayer;
+          Turn turn = Turn.createTurn(currentPlayer, turnStr);
+          turn.Player = currentPlayer;
           validateTurn(turn);
           if (turn.Type == TurnType.Placement)
           {
@@ -112,8 +113,10 @@ public class Game
 
   private void validateTurn(Turn turn)
   {
-    // TODO: validate whether move or place is allowed
+    // TODO:
+    // Validate whether move or place is allowed
+    // Validate that the player is moving their own piece
     board.validateTurn(turn);
-    turn.player.validateHasPiece(turn.PieceType);
+    turn.Player.validateHasPiece(turn.PieceType);
   }
 }

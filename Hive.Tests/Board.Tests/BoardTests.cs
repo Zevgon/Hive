@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Xunit;
 
 namespace Tests
@@ -9,6 +10,7 @@ namespace Tests
   {
     private StringWriter consoleOutCatcher;
     private TextWriter originalOutput;
+    private static Random random = new Random();
 
     public BoardTests()
     {
@@ -59,41 +61,6 @@ namespace Tests
     }
 
     [Fact]
-    public void testPlacePiece_tileOccupied_fails()
-    {
-      Piece piece2 = newPiece();
-      Board board = new Board(
-        new Dictionary<int, List<Piece>>
-        {
-          {0, new List<Piece>(new Piece[] {newPiece()})},
-        }
-      );
-
-      board.placePiece(0, piece2);
-
-      Assert.Equal(
-         $"{ErrorMessages.TILE_OCCUPIED}\n", consoleOutCatcher.ToString());
-    }
-
-    [Fact]
-    public void testPlacePiece_beetle_tileOccupied_fails()
-    {
-      Piece beetle = new Piece(PieceType.Beetle, Color.White);
-      Board board = new Board(
-        new Dictionary<int, List<Piece>>
-        {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Queen, Color.White)})},
-        }
-      );
-
-      board.placePiece(0, beetle);
-
-      Assert.Equal(
-         $"{ErrorMessages.TILE_OCCUPIED}\n", consoleOutCatcher.ToString());
-      Assert.Equal(PieceType.Queen, board.getTopPiece(0).Type);
-    }
-
-    [Fact]
     public void testPlacePiece_nextToOppositeColor_onePiecePlaced_succeeds()
     {
       Board board = new Board(
@@ -110,7 +77,54 @@ namespace Tests
     }
 
     [Fact]
-    public void testPlacePiece_nextToOppositeColor_multiplePiecesPlaced_fails()
+    public void testValidatePlacement_tileOccupied_fails()
+    {
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {newPiece()})},
+        }
+      );
+      // TODO: improve turn creation, maybe use builder pattern?
+      Turn turn = new Turn();
+      turn.Type = TurnType.Placement;
+      turn.PieceType = RandomPieceType();
+      turn.PlacementTile = 0;
+      turn.Player = newPlayer();
+
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(turn);
+        });
+
+      Assert.Equal($"{ErrorMessages.TILE_OCCUPIED}", e.Message);
+    }
+
+    [Fact]
+    public void testValidatePlacement_beetle_tileOccupied_fails()
+    {
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {newPiece()})},
+        }
+      );
+      Turn turn = new Turn();
+      turn.Type = TurnType.Placement;
+      turn.PieceType = PieceType.Beetle;
+      turn.PlacementTile = 0;
+      turn.Player = newPlayer();
+
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(turn);
+        });
+
+      Assert.Equal($"{ErrorMessages.TILE_OCCUPIED}", e.Message);
+    }
+
+    [Fact]
+    public void testValidatePlacement_nextToOppositeColor_multiplePiecesPlaced_fails()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -119,12 +133,18 @@ namespace Tests
           {1, new List<Piece>(new Piece[] { new Piece(PieceType.Queen, Color.Black)})},
         }
       );
+      Turn turn = new Turn();
+      turn.Type = TurnType.Placement;
+      turn.PieceType = PieceType.Beetle;
+      turn.PlacementTile = 2;
+      turn.Player = newPlayer();
 
-      board.placePiece(2, new Piece(PieceType.Queen, Color.White));
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(turn);
+        });
 
-      Assert.Equal(
-         $"{ErrorMessages.PLACEMENT_ADJACENCY}\n", consoleOutCatcher.ToString());
-      Assert.False(board.isOccupied(2));
+      Assert.Equal($"{ErrorMessages.PLACEMENT_ADJACENCY}", e.Message);
     }
 
     [Fact]
@@ -167,7 +187,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_wouldBreakOneHiveRule_fails_1()
+    public void testValidateMove_wouldBreakOneHiveRule_fails_1()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -177,16 +197,21 @@ namespace Tests
           {4, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
         }
       );
+      Turn turn = newTurn();
+      turn.Type = TurnType.Move;
+      turn.TileStart = 0;
+      turn.TileEnd = 2;
 
-      board.movePiece(0, 2);
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(turn);
+        });
 
-      Assert.Equal(
-        $"{ErrorMessages.ONE_HIVE}\n", consoleOutCatcher.ToString());
-      Assert.Equal(PieceType.Queen, board.getTopPiece(0).Type);
+      Assert.Equal($"{ErrorMessages.ONE_HIVE}", e.Message);
     }
 
     [Fact]
-    public void testMovePiece_wouldBreakOneHiveRule_fails_2()
+    public void testValidateMove_wouldBreakOneHiveRule_fails_2()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -197,41 +222,48 @@ namespace Tests
           {4, new List<Piece>(new Piece[] {new Piece(PieceType.Beetle, Color.White)})},
         }
       );
+      Turn turn = newTurn();
+      turn.Type = TurnType.Move;
+      turn.TileStart = 0;
+      turn.TileEnd = 2;
 
-      board.movePiece(0, 2);
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(turn);
+        });
 
-      Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", consoleOutCatcher.ToString());
-      Assert.Equal(PieceType.Queen, board.getTopPiece(0).Type);
+      Assert.Equal($"{ErrorMessages.ONE_HIVE}", e.Message);
     }
 
     [Fact]
-    public void testMovePiece_wouldBreakOneHiveRule_fails_3()
+    public void testValidateMove_wouldBreakOneHiveRule_fails_3()
     {
-      Piece queen = new Piece(PieceType.Queen, Color.White);
       // Put the beetles onto occupied tiles to try to mess with piece counts.
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-        {0, new List<Piece>(new Piece[] { queen })},
-        {1, new List<Piece>(new Piece[] {
-          new Piece(PieceType.Ant, Color.White),
-          new Piece(PieceType.Beetle, Color.White)})
-        },
-        {4, new List<Piece>(new Piece[] {
-          new Piece(PieceType.Gh, Color.White),
-          new Piece(PieceType.Beetle, Color.White)})
-        },
+          {0, new List<Piece>(new Piece[] { newPiece() })},
+          {1, new List<Piece>(new Piece[] {
+            newPiece(),
+            new Piece(PieceType.Beetle, Color.White)})
+          },
+          {4, new List<Piece>(new Piece[] {
+            newPiece(),
+            new Piece(PieceType.Beetle, Color.White)})
+          },
         }
       );
 
-      board.movePiece(0, 2);
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(newMoveTurn(0, 2));
+        });
 
-      Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", consoleOutCatcher.ToString());
-      Assert.Equal(queen, board.getTopPiece(0));
+      Assert.Equal($"{ErrorMessages.ONE_HIVE}", e.Message);
     }
 
     [Fact]
-    public void testMovePiece_wouldBreakOneHiveRule_fails_4()
+    public void testValidateMove_wouldBreakOneHiveRule_fails_4()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -247,14 +279,16 @@ namespace Tests
         }
       );
 
-      board.movePiece(0, 2);
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(newMoveTurn(0, 2));
+        });
 
-      Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", consoleOutCatcher.ToString());
-      Assert.Equal(PieceType.Queen, board.getTopPiece(0).Type);
+      Assert.Equal($"{ErrorMessages.ONE_HIVE}", e.Message);
     }
 
     [Fact]
-    public void testMovePiece_wouldBreakOneHiveRule_fails_5()
+    public void testValidateMove_wouldBreakOneHiveRule_fails_5()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -264,10 +298,12 @@ namespace Tests
         }
       );
 
-      board.movePiece(1, 7);
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(newMoveTurn(1, 7));
+        });
 
-      Assert.Equal($"{ErrorMessages.ONE_HIVE}\n", consoleOutCatcher.ToString());
-      Assert.Equal(PieceType.Ant, board.getTopPiece(1).Type);
+      Assert.Equal($"{ErrorMessages.ONE_HIVE}", e.Message);
     }
 
     [Fact]
@@ -320,7 +356,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_ant_throughSpaceWithOneEdge_fails()
+    public void testValidateMove_ant_throughSpaceWithOneEdge_fails()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -334,16 +370,16 @@ namespace Tests
         }
       );
 
-      board.movePiece(6, 2);
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(newMoveTurn(6, 2));
+        });
 
-      Assert.Equal(
-        $"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
-      Assert.Equal(PieceType.Ant, board.getTopPiece(6).Type);
-      Assert.False(board.isOccupied(2));
+      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
     }
 
     [Fact]
-    public void testMovePiece_ant_throughSpaceWithOneEdge_destIsAdjacentToOrigin_fails()
+    public void testValieateMove_ant_throughSpaceWithOneEdge_destIsAdjacentToOrigin_fails()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -357,11 +393,12 @@ namespace Tests
         }
       );
 
-      board.movePiece(8, 2);
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(newMoveTurn(8, 2));
+        });
 
-      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
-      Assert.Equal(PieceType.Ant, board.getTopPiece(8).Type);
-      Assert.False(board.isOccupied(2));
+      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
     }
 
     [Fact]
@@ -420,7 +457,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_beetle_multipleTilesAway_fails()
+    public void testValidateMove_beetle_multipleTilesAway_fails()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -430,16 +467,16 @@ namespace Tests
         }
       );
 
-      board.movePiece(1, 3);
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(newMoveTurn(1, 3));
+        });
 
-      Assert.Equal(
-        $"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
-      Assert.Equal(PieceType.Beetle, board.getTopPiece(1).Type);
-      Assert.False(board.isOccupied(3));
+      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
     }
 
     [Fact]
-    public void testMovePiece_beetle_jumpInsteadOfPivot_fails()
+    public void testValidateMove_beetle_jumpInsteadOfPivot_fails()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -452,12 +489,12 @@ namespace Tests
         }
       );
 
-      board.movePiece(8, 9);
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(newMoveTurn(8, 9));
+        });
 
-      Assert.Equal(
-        $"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
-      Assert.Equal(PieceType.Beetle, board.getTopPiece(8).Type);
-      Assert.False(board.isOccupied(9));
+      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
     }
 
     [Fact]
@@ -534,7 +571,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_grasshopper_overEmptyTile_fails()
+    public void testValidateMove_grasshopper_overEmptyTile_fails()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -545,16 +582,16 @@ namespace Tests
         }
       );
 
-      board.movePiece(1, 10);
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(newMoveTurn(1, 10));
+        });
 
-      Assert.Equal(
-        $"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
-      Assert.Equal(PieceType.Gh, board.getTopPiece(1).Type);
-      Assert.False(board.isOccupied(10));
+      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
     }
 
     [Fact]
-    public void testMovePiece_grasshopper_ontoAdjacentSpace_fails()
+    public void testValidateMove_grasshopper_ontoAdjacentSpace_fails()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -564,16 +601,16 @@ namespace Tests
         }
       );
 
-      board.movePiece(1, 2);
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(newMoveTurn(1, 2));
+        });
 
-      Assert.Equal(
-        $"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
-      Assert.Equal(PieceType.Gh, board.getTopPiece(1).Type);
-      Assert.False(board.isOccupied(2));
+      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
     }
 
     [Fact]
-    public void testMovePiece_grasshopper_ontoOccupiedTile_fails()
+    public void testValidateMove_grasshopper_ontoOccupiedTile_fails()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -584,12 +621,12 @@ namespace Tests
         }
       );
 
-      board.movePiece(1, 4);
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(newMoveTurn(1, 4));
+        });
 
-      Assert.Equal(
-        $"{ErrorMessages.PIECE_STACKING}\n", consoleOutCatcher.ToString());
-      Assert.Equal(PieceType.Gh, board.getTopPiece(1).Type);
-      Assert.Equal(PieceType.Spider, board.getTopPiece(4).Type);
+      Assert.Equal($"{ErrorMessages.PIECE_STACKING}", e.Message);
     }
 
     [Fact]
@@ -627,7 +664,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_grasshopper_crookedJump_fails()
+    public void testValidateMove_grasshopper_crookedJump_fails()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -637,12 +674,12 @@ namespace Tests
         }
       );
 
-      board.movePiece(1, 3);
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(newMoveTurn(1, 3));
+        });
 
-      Assert.Equal(
-        $"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
-      Assert.Equal(PieceType.Gh, board.getTopPiece(1).Type);
-      Assert.False(board.isOccupied(3));
+      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
     }
 
     [Fact]
@@ -663,7 +700,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_queen_destOccupied_fails()
+    public void testValidateMove_queen_destOccupied_fails()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -673,16 +710,16 @@ namespace Tests
         }
       );
 
-      board.movePiece(1, 0);
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(newMoveTurn(1, 0));
+        });
 
-      Assert.Equal(
-        $"{ErrorMessages.PIECE_STACKING}\n", consoleOutCatcher.ToString());
-      Assert.Equal(PieceType.Spider, board.getTopPiece(0).Type);
-      Assert.Equal(PieceType.Queen, board.getTopPiece(1).Type);
+      Assert.Equal($"{ErrorMessages.PIECE_STACKING}", e.Message);
     }
 
     [Fact]
-    public void testMovePiece_queen_multipleTilesAway_fails()
+    public void testValidateMove_queen_multipleTilesAway_fails()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -692,16 +729,16 @@ namespace Tests
         }
       );
 
-      board.movePiece(1, 3);
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(newMoveTurn(1, 3));
+        });
 
-      Assert.Equal(
-        $"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
-      Assert.False(board.isOccupied(3));
-      Assert.Equal(PieceType.Queen, board.getTopPiece(1).Type);
+      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
     }
 
     [Fact]
-    public void testMovePiece_queen_jumpInsteadOfPivot_fails()
+    public void testPlacementMove_queen_jumpInsteadOfPivot_fails()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -714,16 +751,16 @@ namespace Tests
         }
       );
 
-      board.movePiece(8, 9);
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(newMoveTurn(8, 9));
+        });
 
-      Assert.Equal(
-        $"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
-      Assert.Equal(PieceType.Queen, board.getTopPiece(8).Type);
-      Assert.False(board.isOccupied(9));
+      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
     }
 
     [Fact]
-    public void testMovePiece_spider_oneTileTraveled_fails()
+    public void testValidateMove_spider_oneTileTraveled_fails()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -733,15 +770,16 @@ namespace Tests
         }
       );
 
-      board.movePiece(1, 2);
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(newMoveTurn(1, 2));
+        });
 
-      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
-      Assert.False(board.isOccupied(2));
-      Assert.Equal(PieceType.Spider, board.getTopPiece(1).Type);
+      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
     }
 
     [Fact]
-    public void testMovePiece_spider_twoTilesTraveled_fails()
+    public void testValidateMove_spider_twoTileTraveled_fails()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -751,11 +789,12 @@ namespace Tests
         }
       );
 
-      board.movePiece(1, 3);
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(newMoveTurn(1, 3));
+        });
 
-      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
-      Assert.False(board.isOccupied(3));
-      Assert.Equal(PieceType.Spider, board.getTopPiece(1).Type);
+      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
     }
 
     [Fact]
@@ -776,7 +815,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testMovePiece_spider_fourTilesTraveled_fails()
+    public void testValidateMove_spider_fourTilesTraveled_fails()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -787,15 +826,16 @@ namespace Tests
         }
       );
 
-      board.movePiece(1, 13);
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(newMoveTurn(1, 13));
+        });
 
-      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
-      Assert.False(board.isOccupied(13));
-      Assert.Equal(PieceType.Spider, board.getTopPiece(1).Type);
+      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
     }
 
     [Fact]
-    public void testMovePiece_spider_backtracking_fails_1()
+    public void testValidateMove_spider_backtracking_fails_1()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -811,15 +851,16 @@ namespace Tests
         }
       );
 
-      board.movePiece(0, 2);
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(newMoveTurn(0, 2));
+        });
 
-      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
-      Assert.False(board.isOccupied(2));
-      Assert.Equal(PieceType.Spider, board.getTopPiece(0).Type);
+      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
     }
 
     [Fact]
-    public void testMovePiece_spider_backtracking_fails_2()
+    public void testValidateMove_spider_backtracking_fails_2()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -835,11 +876,12 @@ namespace Tests
         }
       );
 
-      board.movePiece(0, 3);
+      ArgumentException e = Assert.Throws<ArgumentException>(() =>
+        {
+          board.validateTurn(newMoveTurn(0, 3));
+        });
 
-      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}\n", consoleOutCatcher.ToString());
-      Assert.False(board.isOccupied(3));
-      Assert.Equal(PieceType.Spider, board.getTopPiece(0).Type);
+      Assert.Equal($"{ErrorMessages.ILLEGAL_MOVE}", e.Message);
     }
 
     [Fact]
@@ -912,7 +954,50 @@ namespace Tests
 
     private Piece newPiece()
     {
-      return new Piece(PieceType.Spider, Color.White);
+      return new Piece(RandomPieceType(), RandomColor());
+    }
+
+    public static string RandomString(int length = 5)
+    {
+      const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      return new string(Enumerable.Repeat(chars, length)
+        .Select(s => s[random.Next(s.Length)]).ToArray());
+    }
+
+    // TODO: generic to any enum?? how?
+    public static PieceType RandomPieceType()
+    {
+      Array values = Enum.GetValues(typeof(PieceType));
+      Random random = new Random();
+      return (PieceType)values.GetValue(random.Next(values.Length));
+    }
+
+    public static Color RandomColor()
+    {
+      Array values = Enum.GetValues(typeof(Color));
+      Random random = new Random();
+      return (Color)values.GetValue(random.Next(values.Length));
+    }
+
+    public static Player newPlayer()
+    {
+      return new Player(RandomString(), RandomColor());
+    }
+
+    public static Turn newTurn()
+    {
+      Turn turn = new Turn();
+      turn.Player = newPlayer();
+      return turn;
+    }
+
+    public static Turn newMoveTurn(int tileStart, int tileEnd)
+    {
+      Turn turn = new Turn();
+      turn.TileStart = tileStart;
+      turn.TileEnd = tileEnd;
+      turn.Player = newPlayer();
+      return turn;
     }
   }
 }
