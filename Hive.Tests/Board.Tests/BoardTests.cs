@@ -987,7 +987,6 @@ namespace Tests
     public void testValidateMove_queenNotPlaced_fails()
     {
       Board board = new Board();
-
       board.placePiece(0, new Piece(PieceType.A, Color.White));
       board.placePiece(1, new Piece(PieceType.Q, Color.Black));
 
@@ -1004,7 +1003,6 @@ namespace Tests
     public void testValidateMove_queenPlaced_succeeds()
     {
       Board board = new Board();
-
       board.placePiece(0, new Piece(PieceType.Q, Color.White));
       board.placePiece(1, new Piece(PieceType.Q, Color.Black));
 
