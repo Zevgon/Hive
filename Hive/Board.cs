@@ -8,9 +8,9 @@ public class Board : ICloneable
   // Maps from piece position to the pieces on that position
   // TODO: remove the get?
   private Dictionary<int, List<Piece>> PieceMap { get; }
-  private Dictionary<Color, bool> CanMoveMap = new Dictionary<Color, bool> {
-    { Color.Black, false },
-    { Color.White, false }
+  private Dictionary<Color, int?> QueenPositions = new Dictionary<Color, int?> {
+    { Color.Black, null },
+    { Color.White, null }
   };
   private int SPIDER_DISTANCE = 3;
 
@@ -22,13 +22,13 @@ public class Board : ICloneable
   public Board(Dictionary<int, List<Piece>> pieceMap)
   {
     PieceMap = pieceMap;
-    setCanMoveValues();
+    setQueenPositions();
   }
 
   protected Board(Board other)
   {
     PieceMap = Util.cloneDictionary(other.PieceMap);
-    CanMoveMap = Util.cloneDictionary(other.CanMoveMap);
+    QueenPositions = Util.cloneDictionary(other.QueenPositions);
   }
 
   // Call validatePlacement before this to ensure no messed up board
@@ -37,7 +37,7 @@ public class Board : ICloneable
     PieceMap[tileNumber] = new List<Piece>(new Piece[] { piece });
     if (piece.Type == PieceType.Q)
     {
-      CanMoveMap[piece.Color] = true;
+      QueenPositions[piece.Color] = tileNumber;
     }
   }
 
@@ -58,6 +58,21 @@ public class Board : ICloneable
     {
       validatePlacement(turn);
     }
+  }
+
+  public bool isOver()
+  {
+    foreach (KeyValuePair<Color, int?> entry in QueenPositions)
+    {
+      int? queenPos = entry.Value;
+      if (
+        queenPos != null &&
+        findUnoccupiedAdjacents((int)queenPos).Count == 0)
+      {
+        return true;
+      }
+    }
+    return false;
   }
 
   public bool isOccupied(int tileNumber)
@@ -90,15 +105,15 @@ public class Board : ICloneable
 
   // Private methods
 
-  private void setCanMoveValues()
+  private void setQueenPositions()
   {
-    foreach (List<Piece> pieces in PieceMap.Values)
+    foreach (KeyValuePair<int, List<Piece>> entry in PieceMap)
     {
-      foreach (Piece piece in pieces)
+      foreach (Piece piece in entry.Value)
       {
         if (piece.Type == PieceType.Q)
         {
-          CanMoveMap[piece.Color] = true;
+          QueenPositions[piece.Color] = entry.Key;
         }
       }
     }
@@ -148,7 +163,7 @@ public class Board : ICloneable
 
   private void validateCanMoveThisTurn(Color playerColor)
   {
-    if (!CanMoveMap[playerColor])
+    if (QueenPositions[playerColor] == null)
     {
       throw new ArgumentException(
         ErrorMessages.MUST_PLACE_QUEEN_BEFORE_MOVING);

@@ -1009,6 +1009,94 @@ namespace Tests
       board.validateTurn(newMoveTurn(0, 2, Color.White));
     }
 
+    [Fact]
+    public void testIsQueenSurrounded_afterPlacement_queenSurrounded_returnsTrue()
+    {
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.Black)})},
+          {2, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {7, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {3, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {4, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {5, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+        }
+      );
+
+      board.placePiece(6, new Piece(PieceType.G, Color.White));
+
+      Assert.True(board.isOver());
+    }
+
+    [Fact]
+    public void testIsQueenSurrounded_afterMove_queenSurrounded_returnsTrue()
+    {
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.Black)})},
+          {2, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {7, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {3, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.White)})},
+          {4, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {5, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {13, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+        }
+      );
+
+      board.movePiece(13, 6);
+
+      Assert.True(board.isOver());
+    }
+
+    [Fact]
+    public void testIsQueenSurrounded_afterPlacement_queenNotSurrounded_returnsFalse()
+    {
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.Black)})},
+          {2, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {7, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {3, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.White)})},
+          {4, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {5, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+        }
+      );
+
+      board.placePiece(13, new Piece(PieceType.A, Color.White));
+
+      Assert.False(board.isOver());
+    }
+
+    [Fact]
+    public void testIsQueenSurrounded_afterMove_queenNotSurrounded_returnsFalse()
+    {
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.Black)})},
+          {2, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {7, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {3, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.White)})},
+          {4, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {5, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {13, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+        }
+      );
+
+      board.movePiece(13, 18);
+
+      Assert.False(board.isOver());
+    }
+
+    // Helper methods
+
     private Piece newPiece()
     {
       return new Piece(RandomPieceType(), RandomColor());

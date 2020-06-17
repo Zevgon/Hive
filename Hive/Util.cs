@@ -50,12 +50,12 @@ public class Util
     return ret;
   }
 
-  public static Dictionary<Color, bool> cloneDictionary(
-    Dictionary<Color, bool> original)
+  public static Dictionary<Color, int?> cloneDictionary(
+    Dictionary<Color, int?> original)
   {
-    Dictionary<Color, bool> ret = new Dictionary<Color, bool>(
+    Dictionary<Color, int?> ret = new Dictionary<Color, int?>(
       original.Count, original.Comparer);
-    foreach (KeyValuePair<Color, bool> entry in original)
+    foreach (KeyValuePair<Color, int?> entry in original)
     {
       ret.Add(entry.Key, entry.Value);
     }
