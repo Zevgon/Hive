@@ -24,26 +24,17 @@ public class Board : ICloneable
     PieceMap = Util.cloneDictionary(other.PieceMap);
   }
 
-  // Call validatePlacement before this to ensure no errors
+  // Call validatePlacement before this to ensure no messed up board
   public void placePiece(int tileNumber, Piece piece)
   {
     PieceMap[tileNumber] = new List<Piece>(new Piece[] { piece });
   }
 
+  // Call validateMove before this to ensure no messed up board
   public void movePiece(int tileStart, int tileEnd)
   {
-    // // TODO: clean this up
-    // validateMove(tileStart, tileEnd);
-    try
-    {
-      // validateMove(tileStart, tileEnd);
-      Piece piece = removePiece(tileStart);
-      addPiece(tileEnd, piece);
-    }
-    catch (ArgumentException e)
-    {
-      Console.WriteLine(e.Message);
-    }
+    Piece piece = removePiece(tileStart);
+    addPiece(tileEnd, piece);
   }
 
   public void validateTurn(Turn turn)
@@ -114,22 +105,19 @@ public class Board : ICloneable
 
   private Piece removePiece(int tileNumber)
   {
-    if (isOccupied(tileNumber))
-    {
-      List<Piece> pieces = PieceMap[tileNumber];
-      Piece pieceToRemove = pieces[pieces.Count - 1];
-      pieces.RemoveAt(pieces.Count - 1);
-      if (pieces.Count == 0)
-      {
-        PieceMap.Remove(tileNumber);
-      }
-      return pieceToRemove;
-    }
-    else
+    if (!isOccupied(tileNumber))
     {
       throw new ArgumentException(
         $"Cannot remove piece on tile {tileNumber}. Tile is unoccupied");
     }
+    List<Piece> pieces = PieceMap[tileNumber];
+    Piece pieceToRemove = pieces[pieces.Count - 1];
+    pieces.RemoveAt(pieces.Count - 1);
+    if (pieces.Count == 0)
+    {
+      PieceMap.Remove(tileNumber);
+    }
+    return pieceToRemove;
   }
 
   // Validations

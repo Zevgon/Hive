@@ -8,6 +8,7 @@ namespace Tests
 {
   public class BoardTests : IDisposable
   {
+    // TODO: remove after adding game tests
     private StringWriter consoleOutCatcher;
     private TextWriter originalOutput;
     private static Random random = new Random();
