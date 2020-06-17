@@ -1010,7 +1010,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testIsQueenSurrounded_afterPlacement_queenSurrounded_returnsTrue()
+    public void testGetWinningColor_afterPlacement_whiteQueenSurrounded_returnsBlack()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -1027,33 +1027,33 @@ namespace Tests
 
       board.placePiece(6, new Piece(PieceType.G, Color.White));
 
-      Assert.True(board.isOver());
+      Assert.Equal(Color.Black, board.getWinningColor());
     }
 
     [Fact]
-    public void testIsQueenSurrounded_afterMove_queenSurrounded_returnsTrue()
+    public void testGetWinningColor_afterMove_blackQueenSurrounded_returnsWhite()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
         {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.Black)})},
-          {2, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
-          {7, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
-          {3, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.White)})},
-          {4, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
-          {5, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
-          {13, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.Black)})},
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {2, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.Black)})},
+          {7, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.Black)})},
+          {3, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.Black)})},
+          {4, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.Black)})},
+          {5, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.Black)})},
+          {13, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.Black)})},
         }
       );
 
       board.movePiece(13, 6);
 
-      Assert.True(board.isOver());
+      Assert.Equal(Color.White, board.getWinningColor());
     }
 
     [Fact]
-    public void testIsQueenSurrounded_afterPlacement_queenNotSurrounded_returnsFalse()
+    public void testGetWinningColor_afterPlacement_queenNotSurrounded_returnsNull()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -1070,11 +1070,11 @@ namespace Tests
 
       board.placePiece(13, new Piece(PieceType.A, Color.White));
 
-      Assert.False(board.isOver());
+      Assert.Null(board.getWinningColor());
     }
 
     [Fact]
-    public void testIsQueenSurrounded_afterMove_queenNotSurrounded_returnsFalse()
+    public void testGetWinningColor_afterMove_queenNotSurrounded_returnsNull()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -1092,7 +1092,7 @@ namespace Tests
 
       board.movePiece(13, 18);
 
-      Assert.False(board.isOver());
+      Assert.Null(board.getWinningColor());
     }
 
     // Helper methods

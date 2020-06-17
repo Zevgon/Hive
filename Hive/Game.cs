@@ -65,9 +65,8 @@ public class Game
       new Player("Bob", Color.Black),
     });
     int turnIdx = 0;
-    // TODO: implement
-    // while (!board.isEitherQueenSurrounded())
-    while (true)
+    Color? winningColor = null;
+    while (winningColor == null)
     {
       Player currentPlayer = Players[turnIdx % Players.Count];
       bool turnSuccess = false;
@@ -99,8 +98,11 @@ public class Game
         }
       }
       board.printBoard();
+      winningColor = board.getWinningColor();
       turnIdx++;
     }
+    Player winner = Players.Find(player => player.Color == winningColor);
+    Console.WriteLine($"{winner} wins!");
   }
 
   private string promptTurn(Player player)
@@ -113,9 +115,7 @@ public class Game
 
   private void validateTurn(Turn turn)
   {
-    // TODO:
-    // Validate that the player is moving their own piece
-    board.validateTurn(turn);
     turn.Player.validateHasPiece(turn.PieceType);
+    board.validateTurn(turn);
   }
 }

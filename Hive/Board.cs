@@ -60,21 +60,6 @@ public class Board : ICloneable
     }
   }
 
-  public bool isOver()
-  {
-    foreach (KeyValuePair<Color, int?> entry in QueenPositions)
-    {
-      int? queenPos = entry.Value;
-      if (
-        queenPos != null &&
-        findUnoccupiedAdjacents((int)queenPos).Count == 0)
-      {
-        return true;
-      }
-    }
-    return false;
-  }
-
   public bool isOccupied(int tileNumber)
   {
     return PieceMap.ContainsKey(tileNumber);
@@ -88,6 +73,21 @@ public class Board : ICloneable
     }
     List<Piece> pieces = getPieces(tileNumber);
     return pieces[pieces.Count - 1];
+  }
+
+  public Color? getWinningColor()
+  {
+    foreach (KeyValuePair<Color, int?> entry in QueenPositions)
+    {
+      int? queenPos = entry.Value;
+      if (
+        queenPos != null &&
+        findUnoccupiedAdjacents((int)queenPos).Count == 0)
+      {
+        return entry.Key == Color.White ? Color.Black : Color.White;
+      }
+    }
+    return null;
   }
 
   public object Clone()
