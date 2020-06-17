@@ -75,8 +75,9 @@ public class Board : ICloneable
     return pieces[pieces.Count - 1];
   }
 
-  public Color? getWinningColor()
+  public List<Color> getWinningColors()
   {
+    List<Color> winningColors = new List<Color>();
     foreach (KeyValuePair<Color, int?> entry in QueenPositions)
     {
       int? queenPos = entry.Value;
@@ -84,10 +85,10 @@ public class Board : ICloneable
         queenPos != null &&
         findUnoccupiedAdjacents((int)queenPos).Count == 0)
       {
-        return entry.Key == Color.White ? Color.Black : Color.White;
+        winningColors.Add(entry.Key == Color.White ? Color.Black : Color.White);
       }
     }
-    return null;
+    return winningColors;
   }
 
   public object Clone()

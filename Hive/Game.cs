@@ -65,8 +65,8 @@ public class Game
       new Player("Bob", Color.Black),
     });
     int turnIdx = 0;
-    Color? winningColor = null;
-    while (winningColor == null)
+    List<Color> winningColors = new List<Color>();
+    while (winningColors.Count == 0)
     {
       Player currentPlayer = Players[turnIdx % Players.Count];
       bool turnSuccess = false;
@@ -98,11 +98,19 @@ public class Game
         }
       }
       board.printBoard();
-      winningColor = board.getWinningColor();
+      winningColors = board.getWinningColors();
       turnIdx++;
     }
-    Player winner = Players.Find(player => player.Color == winningColor);
-    Console.WriteLine($"{winner} wins!");
+    List<Player> winners =
+      Players.FindAll(player => winningColors.Contains(player.Color));
+    if (winners.Count > 1)
+    {
+      Console.WriteLine("Game is a draw!");
+    }
+    else
+    {
+      Console.WriteLine($"{winners[0]} wins!");
+    }
   }
 
   private string promptTurn(Player player)

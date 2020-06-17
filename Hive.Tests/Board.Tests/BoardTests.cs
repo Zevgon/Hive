@@ -1029,7 +1029,7 @@ namespace Tests
     }
 
     [Fact]
-    public void testGetWinningColor_afterPlacement_whiteQueenSurrounded_returnsBlack()
+    public void testGetWinningColors_afterPlacement_whiteQueenSurrounded_returnsBlack()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -1046,11 +1046,13 @@ namespace Tests
 
       board.placePiece(6, new Piece(PieceType.G, Color.White));
 
-      Assert.Equal(Color.Black, board.getWinningColor());
+      Assert.Equal(
+        new List<Color>(new Color[] { Color.Black }),
+        board.getWinningColors());
     }
 
     [Fact]
-    public void testGetWinningColor_afterMove_blackQueenSurrounded_returnsWhite()
+    public void testGetWinningColors_afterMove_blackQueenSurrounded_returnsWhite()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -1068,11 +1070,13 @@ namespace Tests
 
       board.movePiece(13, 6);
 
-      Assert.Equal(Color.White, board.getWinningColor());
+      Assert.Equal(
+        new List<Color>(new Color[] { Color.White }),
+        board.getWinningColors());
     }
 
     [Fact]
-    public void testGetWinningColor_afterPlacement_queenNotSurrounded_returnsNull()
+    public void testGetWinningColors_afterPlacement_queenNotSurrounded_isEmpty()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -1089,11 +1093,11 @@ namespace Tests
 
       board.placePiece(13, new Piece(PieceType.A, Color.White));
 
-      Assert.Null(board.getWinningColor());
+      Assert.Empty(board.getWinningColors());
     }
 
     [Fact]
-    public void testGetWinningColor_afterMove_queenNotSurrounded_returnsNull()
+    public void testGetWinningColors_afterMove_queenNotSurrounded_isEmpty()
     {
       Board board = new Board(
         new Dictionary<int, List<Piece>>
@@ -1111,7 +1115,32 @@ namespace Tests
 
       board.movePiece(13, 18);
 
-      Assert.Null(board.getWinningColor());
+      Assert.Empty(board.getWinningColors());
+    }
+
+    [Fact]
+    public void testGetWinningColors_bothQueensSurrounded_containsBothColors()
+    {
+      Board board = new Board(
+        new Dictionary<int, List<Piece>>
+        {
+          // White pieces
+          {0, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.White)})},
+          {2, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
+          {3, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.White)})},
+          {4, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          {5, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.White)})},
+          // Black pieces
+          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.Black)})},
+          {7, new List<Piece>(new Piece[] {new Piece(PieceType.S, Color.Black)})},
+          {8, new List<Piece>(new Piece[] {new Piece(PieceType.B, Color.Black)})},
+          {18, new List<Piece>(new Piece[] {new Piece(PieceType.G, Color.Black)})},
+          {6, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.Black)})},
+        }
+      );
+
+      Assert.Contains(Color.White, board.getWinningColors());
+      Assert.Contains(Color.Black, board.getWinningColors());
     }
 
     // Helper methods
