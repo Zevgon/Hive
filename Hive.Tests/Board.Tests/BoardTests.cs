@@ -986,13 +986,10 @@ namespace Tests
     [Fact]
     public void testValidateMove_queenNotPlaced_fails()
     {
-      Board board = new Board(
-        new Dictionary<int, List<Piece>>
-        {
-          {0, new List<Piece>(new Piece[] {new Piece(PieceType.A, Color.White)})},
-          {1, new List<Piece>(new Piece[] {new Piece(PieceType.Q, Color.Black)})},
-        }
-      );
+      Board board = new Board();
+
+      board.placePiece(0, new Piece(PieceType.A, Color.White));
+      board.placePiece(1, new Piece(PieceType.Q, Color.Black));
 
       ArgumentException e = Assert.Throws<ArgumentException>(() =>
         {
@@ -1001,6 +998,17 @@ namespace Tests
 
       Assert.Equal(
         $"{ErrorMessages.MUST_PLACE_QUEEN_BEFORE_MOVING}", e.Message);
+    }
+
+    [Fact]
+    public void testValidateMove_queenPlaced_succeeds()
+    {
+      Board board = new Board();
+
+      board.placePiece(0, new Piece(PieceType.Q, Color.White));
+      board.placePiece(1, new Piece(PieceType.Q, Color.Black));
+
+      board.validateTurn(newMoveTurn(0, 2, Color.White));
     }
 
     private Piece newPiece()
