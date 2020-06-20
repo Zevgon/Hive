@@ -20,7 +20,7 @@ public class Turn
   public int TileStart;
   // Will be null if piece type is Placement
   public int TileEnd;
-  private static string DeserializationPattern = @"^(\d+|\w+):(\d+)$";
+  private static string DeserializationPattern = @"^(\w+):(\d+)$";
 
   public static Turn createTurn(Player player, string turnStr)
   {
